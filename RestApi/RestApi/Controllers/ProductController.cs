@@ -3,6 +3,8 @@ using DataAccessLayer.Models;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System;
+using System.Net.Http;
+using Microsoft.AspNetCore.Authorization;
 
 namespace RestApi.Controllers
 {
@@ -18,6 +20,7 @@ namespace RestApi.Controllers
         }
 
         [HttpGet("")]
+        [Authorize]
         public Object GetAll()
         {
             var data = _service.GetAll();

@@ -3,6 +3,7 @@ using DataAccessLayer.Models;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System;
+using Microsoft.AspNetCore.Authorization;
 
 namespace RestApi.Controllers
 {
