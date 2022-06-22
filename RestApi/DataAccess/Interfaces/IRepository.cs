@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using DataAccessLayer.Models;
+﻿using DataAccessLayer.Models;
+using System.Collections.Generic;
 
 namespace DataAccessLayer.Interfaces
 {

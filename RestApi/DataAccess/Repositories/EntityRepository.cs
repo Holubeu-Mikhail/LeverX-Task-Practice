@@ -6,11 +6,11 @@ using DataAccessLayer.Models;
 
 namespace DataAccessLayer.Repositories
 {
-    public class Repository<T> : IRepository<T> where T : BaseModel
+    public class EntityRepository<T> : IRepository<T> where T : BaseModel
     {
         private readonly DbContext _context;
 
-        public Repository(DbContext context)
+        public EntityRepository(DbContext context)
         {
             _context = context;
         }

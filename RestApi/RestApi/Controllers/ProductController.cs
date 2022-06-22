@@ -20,7 +20,7 @@ namespace RestApi.Controllers
         }
 
         [HttpGet("")]
-        [Authorize]
+        //[Authorize]
         public Object GetAll()
         {
             var data = _service.GetAll();

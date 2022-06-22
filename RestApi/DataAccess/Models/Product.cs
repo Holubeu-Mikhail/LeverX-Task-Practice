@@ -1,9 +1,10 @@
-﻿namespace DataAccessLayer.Models
+﻿using MongoDB.Bson.Serialization.Attributes;
+
+namespace DataAccessLayer.Models
 {
+    [BsonIgnoreExtraElements(true)]
     public class Product : BaseModel
     {
-        public override int Id { get; set; }
-
         public string Name { get; set; }
 
         public int Quantity { get; set; }

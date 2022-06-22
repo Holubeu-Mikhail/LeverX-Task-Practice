@@ -26,7 +26,7 @@ namespace RestApi
             Configuration = configuration;
         }
 
-        public IConfiguration Configuration { get; }
+        public IConfiguration Configuration { get; private set; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -53,7 +53,7 @@ namespace RestApi
 
             services.AddTransient<DbContext, ApplicationDbContext>();
             services.AddTransient(typeof(IValidator<>), typeof(Validator<>));
-            services.AddTransient(typeof(IRepository<>), typeof(Repository<>));
+            services.AddTransient(typeof(IRepository<>), typeof(MongoRepository<>));
             services.AddTransient(typeof(IService<>), typeof(Service<>));
 
             services.AddControllers();
@@ -96,6 +96,13 @@ namespace RestApi
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            var builder = new ConfigurationBuilder()
+                .SetBasePath(env.ContentRootPath)
+                .AddJsonFile("appsettings.json");
+
+            builder.AddEnvironmentVariables();
+            Configuration = builder.Build();
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();

@@ -1,7 +1,11 @@
-﻿namespace DataAccessLayer.Models
+﻿using MongoDB.Bson.Serialization.Attributes;
+
+namespace DataAccessLayer.Models
 {
-    public abstract class BaseModel
+    [BsonIgnoreExtraElements(true)]
+    public class BaseModel
     {
-        public abstract int Id { get; set; }
+        [BsonId]
+        public virtual int Id { get; set; }
     }
 }
