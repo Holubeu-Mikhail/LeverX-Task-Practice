@@ -16,6 +16,7 @@ using System;
 using System.Collections.Generic;
 using IdentityServer4.AccessTokenValidation;
 using Swashbuckle.AspNetCore.SwaggerUI;
+using Microsoft.AspNetCore.Http;
 
 namespace RestApi
 {
@@ -31,29 +32,14 @@ namespace RestApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddAuthentication(options =>
-                {
-                    options.DefaultScheme = IdentityServerAuthenticationDefaults.AuthenticationScheme;
-                    options.DefaultChallengeScheme = IdentityServerAuthenticationDefaults.AuthenticationScheme;
-                    options.DefaultAuthenticateScheme = IdentityServerAuthenticationDefaults.AuthenticationScheme;
-                })
-                .AddIdentityServerAuthentication(options =>
-                {
-                    options.ApiName = "RestAPI";
-                    options.Authority = "https://localhost:5001";
-                    options.RequireHttpsMetadata = false;
-                });
-            services.AddAuthorization();
-
             services.AddRazorPages();
             services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("LenovoLaptopConnection")));
-            services.AddControllers();
+                options.UseSqlServer(Configuration.GetConnectionString("EntityConnection")));
             services.AddHttpClient();
 
             services.AddTransient<DbContext, ApplicationDbContext>();
             services.AddTransient(typeof(IValidator<>), typeof(Validator<>));
-            services.AddTransient(typeof(IRepository<>), typeof(MongoRepository<>));
+            services.AddTransient(typeof(IRepository<>), typeof(EntityRepository<>));
             services.AddTransient(typeof(IService<>), typeof(Service<>));
 
             services.AddControllers();
@@ -91,6 +77,9 @@ namespace RestApi
                     }
                 });
             });
+
+            services.AddOptions().Configure<UserApiOptions>(builder => builder.UserApiAddress = Configuration["IdentityUrl"]);
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
