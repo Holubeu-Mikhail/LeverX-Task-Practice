@@ -3,20 +3,24 @@ using BusinessLogicLayer.Services;
 using BusinessLogicLayer.Validators;
 using DataAccessLayer;
 using DataAccessLayer.Interfaces;
+using DataAccessLayer.Models;
 using DataAccessLayer.Repositories;
 using FluentValidation;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Swashbuckle.AspNetCore.SwaggerUI;
 using System;
 using System.Collections.Generic;
-using IdentityServer4.AccessTokenValidation;
-using Swashbuckle.AspNetCore.SwaggerUI;
-using Microsoft.AspNetCore.Http;
+using System.Runtime.CompilerServices;
+using IdentityModel;
+using RestEase;
 
 namespace RestApi
 {
@@ -32,13 +36,14 @@ namespace RestApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddRazorPages();
+            
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("EntityConnection")));
             services.AddHttpClient();
 
             services.AddTransient<DbContext, ApplicationDbContext>();
-            services.AddTransient(typeof(IValidator<>), typeof(Validator<>));
+            services.AddTransient<IValidator<Product>, ProductValidator>();
+            services.AddTransient<IValidator<ProductType>, ProductTypeValidator>();
             services.AddTransient(typeof(IRepository<>), typeof(EntityRepository<>));
             services.AddTransient(typeof(IService<>), typeof(Service<>));
 
@@ -46,40 +51,7 @@ namespace RestApi
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "RestApi", Version = "v1" });
-
-                c.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
-                {
-                    Type = SecuritySchemeType.OAuth2,
-                    Flows = new OpenApiOAuthFlows
-                    {
-                        Password = new OpenApiOAuthFlow
-                        {
-                            TokenUrl = new Uri("https://localhost:44315/connect/token")
-                        }
-                    }
-                });
-
-                c.AddSecurityRequirement(new OpenApiSecurityRequirement
-                {
-                    {
-                        new OpenApiSecurityScheme
-                        {
-                            Reference = new OpenApiReference
-                            {
-                                Type = ReferenceType.SecurityScheme,
-                                Id = "oauth2"
-                            },
-                            Scheme = "oauth2",
-                            Name = "Bearer",
-                            In = ParameterLocation.Header
-                        },
-                        new List<string>()
-                    }
-                });
             });
-
-            services.AddOptions().Configure<UserApiOptions>(builder => builder.UserApiAddress = Configuration["IdentityUrl"]);
-            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -100,9 +72,6 @@ namespace RestApi
                 {
                     c.SwaggerEndpoint("/swagger/v1/swagger.json", "RestApi v1");
                     c.DocumentTitle = "Rest API in LeverX practice";
-                    c.DocExpansion(DocExpansion.List);
-                    c.OAuthClientId("client_id_restapi");
-                    c.OAuthClientSecret("client_secret_restapi");
                 });
             }
             else
@@ -116,12 +85,11 @@ namespace RestApi
             app.UseStaticFiles();
             app.UseRouting();
 
-            app.UseAuthentication();
             app.UseAuthorization();
+            app.UseAuthentication();
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapRazorPages();
                 endpoints.MapControllers();
             });
         }

@@ -34,20 +34,17 @@ public class Startup
                 options.UseSqlServer(Configuration["ConnectionStrings:EntityConnection"]);
             });
 
-            services.AddIdentity<IdentityUser, IdentityRole>()
-                .AddEntityFrameworkStores<IdsDbContext>();
-
             services.AddControllers();
-            services.AddIdentityServer()
-                .AddInMemoryIdentityResources(Config.GetIdentityResources())
-                .AddInMemoryClients(Config.GetClients())
-                .AddInMemoryApiResources(Config.GetApiResources())
-                .AddDeveloperSigningCredential()
-                .AddTestUsers(Config.Users);
+            //services.AddIdentityServer()
+            //    .AddInMemoryIdentityResources(Config.GetIdentityResources())
+            //    .AddInMemoryClients(Config.GetClients())
+            //    .AddInMemoryApiResources(Config.GetApiResources())
+            //    .AddDeveloperSigningCredential()
+            //    .AddTestUsers(Config.Users);
 
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "RestApi", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "IdentityServer", Version = "v1" });
 
                 c.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
                 {
@@ -79,6 +76,9 @@ public class Startup
                     }
                 });
             });
+
+            services.AddIdentity<IdentityUser, IdentityRole>()
+                .AddEntityFrameworkStores<IdsDbContext>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

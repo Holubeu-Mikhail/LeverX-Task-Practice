@@ -1,15 +1,15 @@
 ﻿using BusinessLogicLayer.Interfaces;
 using DataAccessLayer.Models;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System;
+using Microsoft.AspNetCore.Authorization;
 
 namespace RestApi.Controllers
 {
     [Route("api/product/")]
     [ApiController]
-    [Authorize]
+    //[Authorize]
     public class ProductController : ControllerBase
     {
         private readonly IService<Product> _service;
@@ -18,7 +18,7 @@ namespace RestApi.Controllers
         {
             _service = service;
         }
-
+        
         [HttpGet("")]
         public Object GetAll()
         {

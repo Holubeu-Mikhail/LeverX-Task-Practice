@@ -31,7 +31,7 @@ namespace RestApi.Controllers
             return json;
         }
 
-        [HttpGet("get")]
+        [HttpGet("{id}")]
         public Object Get(int id)
         {
             var data = _service.Get(id);
@@ -72,7 +72,7 @@ namespace RestApi.Controllers
             }
         }
 
-        [HttpDelete("delete")]
+        [HttpDelete("{id}")]
         public bool Delete(int id)
         {
             try

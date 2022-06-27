@@ -1,6 +1,5 @@
 using System.Threading.Tasks;
 using DataAccessLayer.Models.Users;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
@@ -41,11 +40,11 @@ namespace IdentityServer.Controllers
         [HttpPost ("login")]
         public async Task<IActionResult> Login([FromBody] LoginModel loginModel)
         {
-            var result = await _signInManager.PasswordSignInAsync(loginModel.Email, loginModel.Password, false, false);
+            var result = await _signInManager.PasswordSignInAsync(loginModel.Name, loginModel.Password, false, false);
 
             if (result.Succeeded)
             {
-                var user = await _userManager.FindByNameAsync(loginModel.Email);
+                var user = await _userManager.FindByNameAsync(loginModel.Name);
                 return Ok(user);
             }
 
@@ -57,6 +56,13 @@ namespace IdentityServer.Controllers
         {
             _signInManager.SignOutAsync();
             return Ok();
+        }
+
+        [HttpGet("user")]
+        public async Task<IActionResult> GetUser(string name)
+        {
+            var user = await _userManager.FindByNameAsync(name);
+            return Ok(user);
         }
     }
 }
