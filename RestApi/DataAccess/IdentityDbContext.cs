@@ -1,14 +1,15 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using ProductsApi.Models;
+using DataAccessLayer.Models.Authentication;
 
-namespace ProductsApi.Utility
+namespace DataAccessLayer
 {
-    public class IdentityDbContext : IdentityDbContext<ApplicationUser>
+    public class IdentityDbContext : IdentityDbContext<User>
     {
         public IdentityDbContext(DbContextOptions<IdentityDbContext> options) : base(options)
         {
         }
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);

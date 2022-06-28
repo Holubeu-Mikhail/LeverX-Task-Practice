@@ -15,7 +15,10 @@ namespace BusinessLogicLayer.Validators
             RuleFor(x => x.TypeId).GreaterThanOrEqualTo(0);
             RuleFor(x => x.Name).NotNull().NotEmpty();
 
-            RuleSet("BeforeCreating", () => { RuleFor(x => x).Must(x => IsNameUnique(x)); });
+            RuleSet("BeforeCreating", () =>
+            {
+                RuleFor(x => x).Must(x => IsNameUnique(x));
+            });
 
             RuleSet("BeforeUpdating", () =>
             {

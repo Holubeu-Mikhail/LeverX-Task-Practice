@@ -3,7 +3,6 @@ using DataAccessLayer.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-using System.Data;
 
 namespace ProductsApi.Controllers
 {
@@ -20,7 +19,7 @@ namespace ProductsApi.Controllers
 
         [HttpGet("")]
         [Authorize]
-        public Object GetAll()
+        public string? GetAll()
         {
             var data = _service.GetAll();
             var json = JsonConvert.SerializeObject(data, Formatting.Indented,
@@ -34,7 +33,7 @@ namespace ProductsApi.Controllers
 
         [HttpGet("{id}")]
         [Authorize]
-        public Object Get(int id)
+        public string? Get(int id)
         {
             var data = _service.Get(id);
             var json = JsonConvert.SerializeObject(data, Formatting.Indented,
@@ -48,7 +47,7 @@ namespace ProductsApi.Controllers
 
         [HttpPost("create")]
         [Authorize(Roles = "Admin")]
-        public Object Create([FromBody] ProductType productType)
+        public bool Create([FromBody] ProductType productType)
         {
             try
             {

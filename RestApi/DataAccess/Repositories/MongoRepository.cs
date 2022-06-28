@@ -12,12 +12,13 @@ namespace DataAccessLayer.Repositories
 
         public MongoRepository()
         {
-            string connectionString = "mongodb://localhost:27017/ProductsDb";
+            var connectionString = "mongodb://localhost:27017/ProductsDb";
+
             var connection = new MongoUrlBuilder(connectionString);
 
-            MongoClient client = new MongoClient(connectionString);
+            var client = new MongoClient(connectionString);
 
-            IMongoDatabase database = client.GetDatabase(connection.DatabaseName);
+            var database = client.GetDatabase(connection.DatabaseName);
 
             _collection = database.GetCollection<T>($"{typeof(T).Name}s");
         }

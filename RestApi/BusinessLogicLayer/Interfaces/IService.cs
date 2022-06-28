@@ -10,5 +10,4 @@ namespace BusinessLogicLayer.Interfaces
         void Update(T item);
         void Delete(int id);
     }
-
 }
