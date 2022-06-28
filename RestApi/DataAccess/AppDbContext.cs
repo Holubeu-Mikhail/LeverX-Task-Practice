@@ -3,10 +3,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DataAccessLayer
 {
-    public class ApplicationDbContext : DbContext
+    public class AppDbContext : DbContext
     {
 
-        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
+        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
         }
         protected override void OnModelCreating(ModelBuilder builder)

@@ -37,11 +37,11 @@ namespace RestApi
         public void ConfigureServices(IServiceCollection services)
         {
             
-            services.AddDbContext<ApplicationDbContext>(options =>
+            services.AddDbContext<AppDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("EntityConnection")));
             services.AddHttpClient();
 
-            services.AddTransient<DbContext, ApplicationDbContext>();
+            services.AddTransient<DbContext, AppDbContext>();
             services.AddTransient<IValidator<Product>, ProductValidator>();
             services.AddTransient<IValidator<ProductType>, ProductTypeValidator>();
             services.AddTransient(typeof(IRepository<>), typeof(EntityRepository<>));
