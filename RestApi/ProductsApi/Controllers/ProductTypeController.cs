@@ -6,7 +6,7 @@ using Newtonsoft.Json;
 
 namespace ProductsApi.Controllers
 {
-    [Route("api/product-type")]
+    [Route("api/product-types")]
     [ApiController]
     public class ProductTypeController : ControllerBase
     {
@@ -17,15 +17,15 @@ namespace ProductsApi.Controllers
             _service = service;
         }
 
-        [HttpGet("")]
+        [HttpGet]
         [Authorize]
         public string? GetAll()
         {
             var data = _service.GetAll();
             var json = JsonConvert.SerializeObject(data, Formatting.Indented,
-                new JsonSerializerSettings()
+                new JsonSerializerSettings
                 {
-                    ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+                    ReferenceLoopHandling = ReferenceLoopHandling.Ignore
                 }
             );
             return json;
@@ -37,15 +37,15 @@ namespace ProductsApi.Controllers
         {
             var data = _service.Get(id);
             var json = JsonConvert.SerializeObject(data, Formatting.Indented,
-                new JsonSerializerSettings()
+                new JsonSerializerSettings
                 {
-                    ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+                    ReferenceLoopHandling = ReferenceLoopHandling.Ignore
                 }
             );
             return json;
         }
 
-        [HttpPost("create")]
+        [HttpPost]
         [Authorize(Roles = "Admin")]
         public bool Create([FromBody] ProductType productType)
         {
@@ -60,7 +60,7 @@ namespace ProductsApi.Controllers
             }
         }
 
-        [HttpPut("update")]
+        [HttpPut]
         [Authorize(Roles = "Admin")]
         public bool Update(ProductType productType)
         {
