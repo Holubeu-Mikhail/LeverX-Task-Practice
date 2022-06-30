@@ -1,4 +1,4 @@
-﻿namespace UnitTests
+﻿namespace BusinessLogicLayer.UnitTests
 {
     public class ProductTypeServiceTest
     {
