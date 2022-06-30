@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace BusinessLogicLayer.Validators
 {
-    public class ProductValidator : Validator<Product>
+    internal class ProductValidator : Validator<Product>
     {
         public ProductValidator(IRepository<Product> repository) : base(repository)
         {

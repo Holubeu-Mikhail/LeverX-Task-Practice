@@ -2,11 +2,15 @@
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using DataAccessLayer.Models;
+
+[assembly: InternalsVisibleTo("DataAccessLayer.IntegrationTests")]
+[assembly: InternalsVisibleTo("ProductsApi")]
 
 namespace DataAccessLayer.Repositories
 {
-    public class EntityRepository<T> : IRepository<T> where T : BaseModel
+    internal class EntityRepository<T> : IRepository<T> where T : BaseModel
     {
         private readonly DbContext _context;
 

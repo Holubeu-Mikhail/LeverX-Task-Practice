@@ -3,12 +3,16 @@ using FluentValidation;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using DataAccessLayer.Interfaces;
 using DataAccessLayer.Models;
 
+[assembly: InternalsVisibleTo("ProductsApi")]
+[assembly: InternalsVisibleTo("BusinessLogicLayer.UnitTests")]
+
 namespace BusinessLogicLayer.Services
 {
-    public class Service<T> : IService<T> where T : BaseModel
+    internal class Service<T> : IService<T> where T : BaseModel
     {
         private readonly IRepository<T> _repository;
         private readonly IValidator<T> _validator;

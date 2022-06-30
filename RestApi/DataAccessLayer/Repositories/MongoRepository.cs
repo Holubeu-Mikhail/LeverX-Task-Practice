@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 namespace DataAccessLayer.Repositories
 {
-    public class MongoRepository<T> : IRepository<T> where T : BaseModel
+    internal class MongoRepository<T> : IRepository<T> where T : BaseModel
     {
         private readonly IMongoCollection<T> _collection;
 

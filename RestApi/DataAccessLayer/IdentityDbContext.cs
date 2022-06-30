@@ -4,7 +4,7 @@ using DataAccessLayer.Models.Authentication;
 
 namespace DataAccessLayer
 {
-    public class IdentityDbContext : IdentityDbContext<User>
+    internal class IdentityDbContext : IdentityDbContext<User>
     {
         public IdentityDbContext(DbContextOptions<IdentityDbContext> options) : base(options)
         {

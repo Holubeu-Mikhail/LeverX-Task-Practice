@@ -4,7 +4,7 @@ using FluentValidation;
 
 namespace BusinessLogicLayer.Validators
 {
-    public class Validator<T> : AbstractValidator<T> where T : BaseModel
+    internal class Validator<T> : AbstractValidator<T> where T : BaseModel
     {
         protected IRepository<T> _repository;
 
