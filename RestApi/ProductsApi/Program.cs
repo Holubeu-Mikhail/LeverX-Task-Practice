@@ -28,8 +28,10 @@ builder.Services.AddTransient<IdentityDbContext<User>, IdentityDbContext>();
 builder.Services.AddTransient<DbContext, AppDbContext>();
 builder.Services.AddTransient<IValidator<Product>, ProductValidator>();
 builder.Services.AddTransient<IValidator<ProductType>, ProductTypeValidator>();
-builder.Services.AddTransient(typeof(IRepository<>), typeof(EntityRepository<>));
-builder.Services.AddTransient(typeof(IService<>), typeof(Service<>));
+builder.Services.AddTransient<IValidator<Brand>, BrandValidator>();
+builder.Services.AddTransient<IValidator<Town>, TownValidator>();
+builder.Services.AddTransient(typeof(IRepository<>), typeof(EntityRepository<>)); // add switcher
+builder.Services.AddTransient(typeof(IDataProvider<>), typeof(DataProvider<>)); // change name service
 
 builder.Services.AddDbContext<IdentityDbContext>(options => 
     options.UseSqlServer(configuration.GetConnectionString("AuthConnection")));

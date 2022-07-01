@@ -6,7 +6,7 @@ namespace DataAccessLayer.IntegrationTests.Common
     {
         private static readonly string ConnectionString = "Data Source=LXIBY788;Initial Catalog=ProductsDb;Integrated Security=True";
         private const string DatabaseName = "ProductsDb";
-        private const string BackupPath = "C:\\Program Files\\Microsoft SQL Server\\MSSQL15.MSSQLSERVER\\MSSQL\\Backup";
+        private const string BackupPath = "D:\\backup.bak";
 
         public static void CreateDatabaseBackup()
         {

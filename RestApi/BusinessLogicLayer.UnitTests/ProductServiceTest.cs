@@ -18,7 +18,7 @@ namespace BusinessLogicLayer.UnitTests
                 .Returns(products.AsQueryable());
 
             var validator = new ProductValidator(mock.Object);
-            var service = new Service<Product>(mock.Object, validator);
+            var service = new DataProvider<Product>(mock.Object, validator);
 
             // Act
             var result = service.GetAll();
@@ -39,7 +39,7 @@ namespace BusinessLogicLayer.UnitTests
                 .Returns(expectedProduct);
 
             var validator = new ProductValidator(mock.Object);
-            var service = new Service<Product>(mock.Object, validator);
+            var service = new DataProvider<Product>(mock.Object, validator);
 
             // Act
             var result = service.Get(id);
@@ -58,7 +58,7 @@ namespace BusinessLogicLayer.UnitTests
                 .Returns((Product)null);
 
             var validator = new ProductValidator(mock.Object);
-            var service = new Service<Product>(mock.Object, validator);
+            var service = new DataProvider<Product>(mock.Object, validator);
 
             // Act
             var result = service.Get(id);
@@ -88,7 +88,7 @@ namespace BusinessLogicLayer.UnitTests
                 .Callback((Product prod) => t = true);
 
             var validator = new ProductValidator(mock.Object);
-            var service = new Service<Product>(mock.Object, validator);
+            var service = new DataProvider<Product>(mock.Object, validator);
 
             // Act
             service.Create(product);
@@ -118,7 +118,7 @@ namespace BusinessLogicLayer.UnitTests
                 .Callback((Product prod) => t = true);
 
             var validator = new ProductValidator(mock.Object);
-            var service = new Service<Product>(mock.Object, validator);
+            var service = new DataProvider<Product>(mock.Object, validator);
 
             // Act
             service.Create(product);
@@ -142,7 +142,7 @@ namespace BusinessLogicLayer.UnitTests
             var mock = new Mock<IRepository<Product>>();
 
             var validator = new ProductValidator(mock.Object);
-            var service = new Service<Product>(mock.Object, validator);
+            var service = new DataProvider<Product>(mock.Object, validator);
 
             // Act
             var act = () => service.Create(product);
@@ -175,7 +175,7 @@ namespace BusinessLogicLayer.UnitTests
                 .Callback((Product prod) => t = true);
 
             var validator = new ProductValidator(mock.Object);
-            var service = new Service<Product>(mock.Object, validator);
+            var service = new DataProvider<Product>(mock.Object, validator);
 
             // Act
             service.Update(product);
@@ -208,7 +208,7 @@ namespace BusinessLogicLayer.UnitTests
                 .Callback((Product prod) => t = true);
 
             var validator = new ProductValidator(mock.Object);
-            var service = new Service<Product>(mock.Object, validator);
+            var service = new DataProvider<Product>(mock.Object, validator);
 
             // Act
             service.Update(product);
@@ -232,7 +232,7 @@ namespace BusinessLogicLayer.UnitTests
             var mock = new Mock<IRepository<Product>>();
 
             var validator = new ProductValidator(mock.Object);
-            var service = new Service<Product>(mock.Object, validator);
+            var service = new DataProvider<Product>(mock.Object, validator);
 
             // Act
             var act = () => service.Update(product);
@@ -256,7 +256,7 @@ namespace BusinessLogicLayer.UnitTests
                 .Callback((int i) => t = true);
 
             var validator = new ProductValidator(mock.Object);
-            var service = new Service<Product>(mock.Object, validator);
+            var service = new DataProvider<Product>(mock.Object, validator);
 
             // Act
             service.Delete(id);

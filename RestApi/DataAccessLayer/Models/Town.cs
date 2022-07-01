@@ -3,14 +3,10 @@
 namespace DataAccessLayer.Models
 {
     [BsonIgnoreExtraElements(true)]
-    public class Product : BaseModel
+    public class Town : BaseModel
     {
         public string Name { get; set; }
 
-        public int Quantity { get; set; }
-
-        public int TypeId { get; set; }
-
-        public int BrandId { get; set; }
+        public int Code { get; set; }
     }
 }

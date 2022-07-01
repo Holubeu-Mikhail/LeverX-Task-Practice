@@ -2,7 +2,7 @@
 
 namespace BusinessLogicLayer.Interfaces
 {
-    public interface IService<T>
+    public interface IDataProvider<T>
     {
         List<T> GetAll();
         T Get(int id);

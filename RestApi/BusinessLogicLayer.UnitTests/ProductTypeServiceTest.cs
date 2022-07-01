@@ -18,7 +18,7 @@
                 .Returns(productTypes);
 
             var validator = new ProductTypeValidator(mock.Object);
-            var service = new Service<ProductType>(mock.Object, validator);
+            var service = new DataProvider<ProductType>(mock.Object, validator);
 
             // Act
             var result = service.GetAll();
@@ -39,7 +39,7 @@
                 .Returns(expectedProductType);
 
             var validator = new ProductTypeValidator(mock.Object);
-            var service = new Service<ProductType>(mock.Object, validator);
+            var service = new DataProvider<ProductType>(mock.Object, validator);
 
             // Act
             var result = service.Get(id);
@@ -58,7 +58,7 @@
                 .Returns((ProductType)null);
 
             var validator = new ProductTypeValidator(mock.Object);
-            var service = new Service<ProductType>(mock.Object, validator);
+            var service = new DataProvider<ProductType>(mock.Object, validator);
 
             // Act
             var result = service.Get(id);
@@ -86,7 +86,7 @@
                 .Callback((ProductType type) => t = true);
 
             var validator = new ProductTypeValidator(mock.Object);
-            var service = new Service<ProductType>(mock.Object, validator);
+            var service = new DataProvider<ProductType>(mock.Object, validator);
 
             // Act
             service.Create(productType);
@@ -114,7 +114,7 @@
                 .Callback((ProductType type) => t = true);
 
             var validator = new ProductTypeValidator(mock.Object);
-            var service = new Service<ProductType>(mock.Object, validator);
+            var service = new DataProvider<ProductType>(mock.Object, validator);
 
             // Act
             service.Create(productType);
@@ -136,7 +136,7 @@
             var mock = new Mock<IRepository<ProductType>>();
 
             var validator = new ProductTypeValidator(mock.Object);
-            var service = new Service<ProductType>(mock.Object, validator);
+            var service = new DataProvider<ProductType>(mock.Object, validator);
 
             // Act
             var act = () => service.Create(productType);
@@ -167,7 +167,7 @@
                 .Callback((ProductType type) => t = true);
 
             var validator = new ProductTypeValidator(mock.Object);
-            var service = new Service<ProductType>(mock.Object, validator);
+            var service = new DataProvider<ProductType>(mock.Object, validator);
 
             // Act
             service.Update(productType);
@@ -198,7 +198,7 @@
                 .Callback((ProductType type) => t = true);
 
             var validator = new ProductTypeValidator(mock.Object);
-            var service = new Service<ProductType>(mock.Object, validator);
+            var service = new DataProvider<ProductType>(mock.Object, validator);
 
             // Act
             service.Update(productType);
@@ -220,7 +220,7 @@
             var mock = new Mock<IRepository<ProductType>>();
 
             var validator = new ProductTypeValidator(mock.Object);
-            var service = new Service<ProductType>(mock.Object, validator);
+            var service = new DataProvider<ProductType>(mock.Object, validator);
 
             // Act
             var act = () => service.Update(productType);
@@ -244,7 +244,7 @@
                 .Callback((int i) => t = true);
 
             var validator = new ProductTypeValidator(mock.Object);
-            var service = new Service<ProductType>(mock.Object, validator);
+            var service = new DataProvider<ProductType>(mock.Object, validator);
 
             // Act
             service.Delete(id);

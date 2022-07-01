@@ -12,12 +12,12 @@ using DataAccessLayer.Models;
 
 namespace BusinessLogicLayer.Services
 {
-    internal class Service<T> : IService<T> where T : BaseModel
+    internal class DataProvider<T> : IDataProvider<T> where T : BaseModel
     {
         private readonly IRepository<T> _repository;
         private readonly IValidator<T> _validator;
 
-        public Service(IRepository<T> repository, IValidator<T> validator)
+        public DataProvider(IRepository<T> repository, IValidator<T> validator)
         {
             _repository = repository ?? throw new ArgumentNullException(nameof(repository));
             _validator = validator ?? throw new ArgumentNullException(nameof(validator));

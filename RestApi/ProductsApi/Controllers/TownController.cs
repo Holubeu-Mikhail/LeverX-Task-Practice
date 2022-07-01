@@ -6,20 +6,19 @@ using Newtonsoft.Json;
 
 namespace ProductsApi.Controllers
 {
-    [Route("api/product-types/")]
+    [Route("api/towns/")]
     [ApiController]
     [Authorize]
-    public class ProductTypeController : Controller
+    public class TownController : Controller
     {
-        private readonly IDataProvider<ProductType> _dataProvider;
+        private readonly IDataProvider<Town> _dataProvider;
 
-        public ProductTypeController(IDataProvider<ProductType> dataProvider)
+        public TownController(IDataProvider<Town> dataProvider)
         {
             _dataProvider = dataProvider;
         }
 
         [HttpGet("")]
-        [Authorize(Roles = "User")]
         public IActionResult GetAll()
         {
             var data = _dataProvider.GetAll();
@@ -27,7 +26,6 @@ namespace ProductsApi.Controllers
         }
 
         [HttpGet("{id:int}")]
-        [Authorize(Roles = "User")]
         public IActionResult Get(int id)
         {
             var data = _dataProvider.Get(id);
@@ -36,11 +34,11 @@ namespace ProductsApi.Controllers
 
         [HttpPost("")]
         [Authorize(Roles = "Admin")]
-        public IActionResult Create([FromBody] ProductType productType)
+        public IActionResult Create([FromBody] Town town)
         {
             try
             {
-                _dataProvider.Create(productType);
+                _dataProvider.Create(town);
                 return Json(true);
             }
             catch (Exception)
@@ -51,11 +49,11 @@ namespace ProductsApi.Controllers
 
         [HttpPut("")]
         [Authorize(Roles = "Admin")]
-        public IActionResult Update(ProductType productType)
+        public IActionResult Update(Town town)
         {
             try
             {
-                _dataProvider.Update(productType);
+                _dataProvider.Update(town);
                 return Json(true);
             }
             catch (Exception)

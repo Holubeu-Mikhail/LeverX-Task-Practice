@@ -1,19 +1,18 @@
-﻿using DataAccessLayer.Interfaces;
+﻿using System.Linq;
+using DataAccessLayer.Interfaces;
 using DataAccessLayer.Models;
 using FluentValidation;
-using System.Linq;
 
 namespace BusinessLogicLayer.Validators
 {
-    internal class ProductValidator : Validator<Product>
+    internal class BrandValidator : Validator<Brand>
     {
-        public ProductValidator(IRepository<Product> repository) : base(repository)
+        public BrandValidator(IRepository<Brand> repository) : base(repository)
         {
             _repository = repository;
 
-            RuleFor(x => x.Quantity).GreaterThanOrEqualTo(0);
-            RuleFor(x => x.TypeId).GreaterThanOrEqualTo(0);
-            RuleFor(x => x.BrandId).GreaterThanOrEqualTo(0);
+            RuleFor(x => x.TownId).GreaterThanOrEqualTo(0);
+            RuleFor(x => x.Description).NotNull().NotEmpty();
             RuleFor(x => x.Name).NotNull().NotEmpty();
 
             RuleSet("BeforeCreating", () =>
@@ -28,9 +27,9 @@ namespace BusinessLogicLayer.Validators
             });
         }
 
-        private bool IsNameUnique(Product product)
+        private bool IsNameUnique(Brand brand)
         {
-            var result = _repository.GetAll().Where(x => x.TypeId == product.TypeId).All(x => x.Name != product.Name);
+            var result = _repository.GetAll().Where(x => x.TownId == brand.TownId).All(x => x.Name != brand.Name);
             return result;
         }
     }

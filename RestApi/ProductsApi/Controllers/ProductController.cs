@@ -8,85 +8,74 @@ namespace ProductsApi.Controllers
 {
     [Route("api/products/")]
     [ApiController]
-    public class ProductController : ControllerBase
+    [Authorize]
+    public class ProductController : Controller
     {
-        private readonly IService<Product> _service;
+        private readonly IDataProvider<Product> _dataProvider;
 
-        public ProductController(IService<Product> service)
+        public ProductController(IDataProvider<Product> dataProvider)
         {
-            _service = service;
+            _dataProvider = dataProvider;
         }
 
-        [HttpGet]
-        [Authorize]
-        public string? GetAll()
+        [HttpGet("")]
+        [Authorize(Roles = "User")]
+        public IActionResult GetAll()
         {
-            var data = _service.GetAll();
-            var json = JsonConvert.SerializeObject(data, Formatting.Indented,
-                new JsonSerializerSettings
-                {
-                    ReferenceLoopHandling = ReferenceLoopHandling.Ignore
-                }
-            );
-            return json;
+            var data = _dataProvider.GetAll();
+            return Json(data);
         }
 
-        [HttpGet("{id}")]
-        [Authorize]
-        public string? Get(int id)
+        [HttpGet("{id:int}")]
+        [Authorize(Roles = "User")]
+        public IActionResult Get(int id)
         {
-            var data = _service.Get(id);
-            var json = JsonConvert.SerializeObject(data, Formatting.Indented,
-                new JsonSerializerSettings
-                {
-                    ReferenceLoopHandling = ReferenceLoopHandling.Ignore
-                }
-            );
-            return json;
+            var data = _dataProvider.Get(id);
+            return Json(data);
         }
 
-        [HttpPost]
+        [HttpPost("")]
         [Authorize(Roles = "Admin")]
-        public bool Create([FromBody] Product product)
+        public IActionResult Create([FromBody] Product product)
         {
             try
             {
-                _service.Create(product);
-                return true;
+                _dataProvider.Create(product);
+                return Json(true);
             }
             catch (Exception)
             {
-                return false;
+                return Json(false);
             }
         }
 
-        [HttpPut]
+        [HttpPut("")]
         [Authorize(Roles = "Admin")]
-        public bool Update(Product product)
+        public IActionResult Update(Product product)
         {
             try
             {
-                _service.Update(product);
-                return true;
+                _dataProvider.Update(product);
+                return Json(true);
             }
             catch (Exception)
             {
-                return false;
+                return Json(false);
             }
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete("{id:int}")]
         [Authorize(Roles = "Admin")]
-        public bool Delete(int id)
+        public IActionResult Delete(int id)
         {
             try
             {
-                _service.Delete(id);
-                return true;
+                _dataProvider.Delete(id);
+                return Json(true);
             }
             catch (Exception)
             {
-                return false;
+                return Json(false);
             }
         }
     }

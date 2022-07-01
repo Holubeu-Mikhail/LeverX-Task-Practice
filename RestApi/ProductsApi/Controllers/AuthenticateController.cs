@@ -8,8 +8,9 @@ using System.Security.Claims;
 
 namespace ProductsApi.Controllers
 {
-    [Route("api/auth")]
+    [Route("api/auth/")]
     [ApiController]
+    [Authorize(Roles="Admin")]
     public class AuthenticateController : ControllerBase
     {
         private readonly UserManager<User> _userManager;
@@ -28,6 +29,7 @@ namespace ProductsApi.Controllers
 
         [HttpPost]
         [Route("login")]
+        [AllowAnonymous]
         public async Task<IActionResult> Login([FromBody] LoginModel model)
         {
             var user = await _userManager.FindByNameAsync(model.Username);
@@ -70,6 +72,7 @@ namespace ProductsApi.Controllers
 
         [HttpPost]
         [Route("register")]
+        [AllowAnonymous]
         public async Task<IActionResult> Register([FromBody] RegisterModel model)
         {
             var userExists = await _userManager.FindByNameAsync(model.Username);
@@ -88,6 +91,11 @@ namespace ProductsApi.Controllers
 
             if (!result.Succeeded)
                 return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "User creation failed! Please check user details and try again." });
+
+            if (!await _roleManager.RoleExistsAsync(UserRoles.User))
+                await _roleManager.CreateAsync(new IdentityRole(UserRoles.User));
+
+            await _userManager.AddToRoleAsync(user, UserRoles.User);
 
             return Ok(new Response { Status = "Success", Message = "User created successfully!" });
         }
@@ -118,21 +126,14 @@ namespace ProductsApi.Controllers
             if (!await _roleManager.RoleExistsAsync(UserRoles.User))
                 await _roleManager.CreateAsync(new IdentityRole(UserRoles.User));
 
-            if (await _roleManager.RoleExistsAsync(UserRoles.Admin))
-            {
-                await _userManager.AddToRoleAsync(user, UserRoles.Admin);
-            }
-            if (await _roleManager.RoleExistsAsync(UserRoles.Admin))
-            {
-                await _userManager.AddToRoleAsync(user, UserRoles.User);
-            }
+            await _userManager.AddToRoleAsync(user, UserRoles.Admin);
+            await _userManager.AddToRoleAsync(user, UserRoles.User);
 
             return Ok(new Response { Status = "Success", Message = "User created successfully!" });
         }
 
         [HttpPost]
         [Route("refresh-token")]
-        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> RefreshToken(TokenModel tokenModel)
         {
             string? accessToken = tokenModel.AccessToken;
@@ -167,7 +168,6 @@ namespace ProductsApi.Controllers
             });
         }
 
-        [Authorize(Roles = "Admin")]
         [HttpPost]
         [Route("revoke/{username}")]
         public async Task<IActionResult> Revoke(string username)
@@ -181,7 +181,6 @@ namespace ProductsApi.Controllers
             return NoContent();
         }
 
-        [Authorize(Roles = "Admin")]
         [HttpPost]
         [Route("revoke-all")]
         public async Task<IActionResult> RevokeAll()

@@ -2,24 +2,23 @@
 using DataAccessLayer.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
 
 namespace ProductsApi.Controllers
 {
-    [Route("api/product-types/")]
+    [Route("api/brands/")]
     [ApiController]
     [Authorize]
-    public class ProductTypeController : Controller
+    public class BrandController : Controller
     {
-        private readonly IDataProvider<ProductType> _dataProvider;
+        private readonly IDataProvider<Brand> _dataProvider;
 
-        public ProductTypeController(IDataProvider<ProductType> dataProvider)
+        public BrandController(IDataProvider<Brand> dataProvider)
         {
             _dataProvider = dataProvider;
         }
 
         [HttpGet("")]
-        [Authorize(Roles = "User")]
+        [Authorize(Roles="User")]
         public IActionResult GetAll()
         {
             var data = _dataProvider.GetAll();
@@ -36,11 +35,11 @@ namespace ProductsApi.Controllers
 
         [HttpPost("")]
         [Authorize(Roles = "Admin")]
-        public IActionResult Create([FromBody] ProductType productType)
+        public IActionResult Create([FromBody] Brand brand)
         {
             try
             {
-                _dataProvider.Create(productType);
+                _dataProvider.Create(brand);
                 return Json(true);
             }
             catch (Exception)
@@ -51,11 +50,11 @@ namespace ProductsApi.Controllers
 
         [HttpPut("")]
         [Authorize(Roles = "Admin")]
-        public IActionResult Update(ProductType productType)
+        public IActionResult Update(Brand brand)
         {
             try
             {
-                _dataProvider.Update(productType);
+                _dataProvider.Update(brand);
                 return Json(true);
             }
             catch (Exception)
