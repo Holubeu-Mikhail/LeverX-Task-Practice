@@ -7,9 +7,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DataAccessLayer.IntegrationTests.RepositoryTests
 {
-    public class ProductRepositoryTest
+    internal class TownRepositoryTest
     {
-        private IRepository<Product> _repository;
+        private IRepository<Town> _repository;
 
         [SetUp]
         public void Setup()
@@ -18,7 +18,7 @@ namespace DataAccessLayer.IntegrationTests.RepositoryTests
             optionsBuilder.UseSqlServer(ConnectionService.GetConnectionString());
             var dbContext = new AppDbContext(optionsBuilder.Options);
 
-            _repository = new EntityRepository<Product>(dbContext);
+            _repository = new EntityRepository<Town>(dbContext);
             BackupService.CreateDatabaseBackup();
             DataHelper.DeleteAllFromDatabase();
             TownDataHelper.FillTable();
@@ -37,7 +37,7 @@ namespace DataAccessLayer.IntegrationTests.RepositoryTests
         public void GetAll_ValidCall_GetAllItemsFromDatabase()
         {
             //Arrange
-            var expectedEntities = new List<Product> { new Product { Id = 1, Name = "Fish", Quantity = 1, TypeId = 1, BrandId = 1} };
+            var expectedEntities = new List<Town> { new Town { Id = 1, Name = "Zhlobin", Code = 201 } };
 
             //Act
             var entities = _repository.GetAll().ToList();
@@ -50,7 +50,7 @@ namespace DataAccessLayer.IntegrationTests.RepositoryTests
         public void Get_ValidCall_GetItemFromDatabase()
         {
             //Arrange
-            var expectedEntity = new Product { Id = 1, Name = "Fish", Quantity = 1, BrandId = 1, TypeId = 1 };
+            var expectedEntity = new Town { Id = 1, Name = "Zhlobin", Code = 201 };
 
             //Act
             var entity = _repository.Get(1);
@@ -63,9 +63,9 @@ namespace DataAccessLayer.IntegrationTests.RepositoryTests
         public void Create_ValidCall_InsertItemInDatabase()
         {
             //Arrange
-            var entities = new List<Product> { new Product { Id = 1, Name = "Fish", Quantity = 1, BrandId = 1, TypeId = 1 },
-                new Product { Id = 2, Name = "Fish2", Quantity = 1, BrandId = 1, TypeId = 1 } };
-            var entity = new Product { Id = 2, Name = "Fish2", Quantity = 1, BrandId = 1, TypeId = 1 };
+            var entities = new List<Town> { new Town { Id = 1, Name = "Zhlobin", Code = 201 },
+                new Town { Id = 2, Name = "Homel", Code = 242 } };
+            var entity = new Town { Id = 2, Name = "Homel", Code = 242 };
 
             //Act
             _repository.Create(entity);
@@ -78,8 +78,8 @@ namespace DataAccessLayer.IntegrationTests.RepositoryTests
         public void Update_ValidCall_UpdateItemInDatabase()
         {
             //Arrange
-            var entity = new Product { Id = 1, Name = "Fish3", Quantity = 1, BrandId = 1, TypeId = 1 };
-            var entities = new List<Product> { entity };
+            var entity = new Town { Id = 1, Name = "Minsk", Code = 232 };
+            var entities = new List<Town> { entity };
 
             //Act
             _repository.Update(entity);
@@ -92,8 +92,8 @@ namespace DataAccessLayer.IntegrationTests.RepositoryTests
         public void Delete_ValidCall_UpdateItemInDatabase()
         {
             //Arrange
-            var entities = new List<Product> { new Product { Id = 1, Name = "Fish", Quantity = 1, BrandId = 1, TypeId = 1 } };
-            var entity = new Product { Id = 2, Name = "Fish2", Quantity = 1, BrandId = 1, TypeId = 1 };
+            var entities = new List<Town> { new Town { Id = 1, Name = "Zhlobin", Code = 201 } };
+            var entity = new Town { Id = 2, Name = "Minsk", Code = 232 };
             _repository.Create(entity);
             var id = 2;
 

@@ -23,7 +23,21 @@ namespace DataAccessLayer.IntegrationTests.Helpers
 
             var productTypeCommand = new SqlCommand(sqlExpression, connection);
             productTypeCommand.ExecuteNonQuery();
-            
+
+            tableName = "Brands";
+
+            sqlExpression = $"DELETE FROM {tableName}";
+
+            var brandCommand = new SqlCommand(sqlExpression, connection);
+            brandCommand.ExecuteNonQuery();
+
+            tableName = "Towns";
+
+            sqlExpression = $"DELETE FROM {tableName}";
+
+            var townCommand = new SqlCommand(sqlExpression, connection);
+            townCommand.ExecuteNonQuery();
+
             connection.Close();
         }
     }

@@ -1,4 +1,4 @@
-﻿using System.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 
 namespace DataAccessLayer.IntegrationTests.Common
 {
@@ -6,8 +6,8 @@ namespace DataAccessLayer.IntegrationTests.Common
     {
         public static string GetConnectionString()
         {
-            var result = ConfigurationManager.
-                ConnectionStrings["Conn"].ConnectionString;
+            //var result = ConfigurationManager.ConnectionStrings["databasePath"].ConnectionString;
+            var result = "Data Source=LXIBY788;Initial Catalog=ProductsDb;Integrated Security=True;";
             return result;
         }
     }

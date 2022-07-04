@@ -1,6 +1,6 @@
 ﻿namespace BusinessLogicLayer.UnitTests
 {
-    public class ProductTypeServiceTest
+    public class ProductTypeDataProviderTest
     {
         [SetUp]
         public void Setup()
@@ -11,11 +11,11 @@
         public void GetAll_ValidCall_ReturnsList()
         {
             // Arrange
-            var productTypes = GetTestProductTypes();
+            var entities = GetTestProductTypes();
 
             var mock = new Mock<IRepository<ProductType>>();
             mock.Setup(r => r.GetAll())
-                .Returns(productTypes);
+                .Returns(entities);
 
             var validator = new ProductTypeValidator(mock.Object);
             var service = new DataProvider<ProductType>(mock.Object, validator);
@@ -24,7 +24,7 @@
             var result = service.GetAll();
 
             // Assert
-            result.Should().NotBeEmpty().And.HaveCount(3).And.BeEquivalentTo(productTypes);
+            result.Should().NotBeEmpty().And.HaveCount(3).And.BeEquivalentTo(entities);
         }
 
         [Test]
@@ -32,11 +32,11 @@
         public void Get_ValidCall_ReturnsEntity(int id)
         {
             // Arrange
-            var expectedProductType = GetTestProductTypes()[id];
+            var expectedEntity = GetTestProductTypes()[id];
 
             var mock = new Mock<IRepository<ProductType>>();
             mock.Setup(r => r.Get(It.IsAny<int>()))
-                .Returns(expectedProductType);
+                .Returns(expectedEntity);
 
             var validator = new ProductTypeValidator(mock.Object);
             var service = new DataProvider<ProductType>(mock.Object, validator);
@@ -45,7 +45,7 @@
             var result = service.Get(id);
 
             // Assert
-            result.Should().NotBeNull().And.BeOfType(typeof(ProductType)).And.BeEquivalentTo(expectedProductType);
+            result.Should().NotBeNull().And.BeOfType(typeof(ProductType)).And.BeEquivalentTo(expectedEntity);
         }
 
         [Test]
@@ -72,24 +72,24 @@
         {
             // Arrange
             var t = false;
-            var productType = new ProductType
+            var entity = new ProductType
             {
                 Id = 4,
                 Name = "Automobile"
             };
-            var productTypes = GetTestProductTypes();
+            var entities = GetTestProductTypes();
 
             var mock = new Mock<IRepository<ProductType>>();
             mock.Setup(r => r.GetAll())
-                .Returns(productTypes);
+                .Returns(entities);
             mock.Setup(r => r.Create(It.IsAny<ProductType>()))
-                .Callback((ProductType type) => t = true);
+                .Callback(() => t = true);
 
             var validator = new ProductTypeValidator(mock.Object);
             var service = new DataProvider<ProductType>(mock.Object, validator);
 
             // Act
-            service.Create(productType);
+            service.Create(entity);
 
             // Assert
             t.Should().BeTrue();
@@ -100,16 +100,16 @@
         {
             // Arrange
             var t = false;
-            var productType = new ProductType
+            var entity = new ProductType
             {
                 Id = 6,
                 Name = "Food"
             };
-            var productTypes = GetTestProductTypes();
+            var entities = GetTestProductTypes();
 
             var mock = new Mock<IRepository<ProductType>>();
             mock.Setup(r => r.GetAll())
-                .Returns(productTypes);
+                .Returns(entities);
             mock.Setup(r => r.Create(It.IsAny<ProductType>()))
                 .Callback((ProductType type) => t = true);
 
@@ -117,7 +117,7 @@
             var service = new DataProvider<ProductType>(mock.Object, validator);
 
             // Act
-            service.Create(productType);
+            service.Create(entity);
 
             // Assert
             t.Should().BeFalse();
@@ -127,7 +127,7 @@
         public void Create_InvalidCall_ThrowsException()
         {
             // Arrange
-            var productType = new ProductType
+            var entity = new ProductType
             {
                 Id = -1,
                 Name = null
@@ -139,7 +139,7 @@
             var service = new DataProvider<ProductType>(mock.Object, validator);
 
             // Act
-            var act = () => service.Create(productType);
+            var act = () => service.Create(entity);
 
             // Assert
             act.Should().Throw<ValidationException>();
@@ -150,27 +150,27 @@
         {
             // Arrange
             var t = false;
-            var productType = new ProductType
+            var entity = new ProductType
             {
                 Id = 1,
                 Name = "Automobile"
             };
-            var productTypes = GetTestProductTypes();
-            var expectedProductType = GetTestProductTypes()[productType.Id];
+            var entities = GetTestProductTypes();
+            var expectedEntity = GetTestProductTypes()[entity.Id];
 
             var mock = new Mock<IRepository<ProductType>>();
             mock.Setup(r => r.GetAll())
-                .Returns(productTypes);
+                .Returns(entities);
             mock.Setup(r => r.Get(It.IsAny<int>()))
-                .Returns(expectedProductType);
+                .Returns(expectedEntity);
             mock.Setup(r => r.Update(It.IsAny<ProductType>()))
-                .Callback((ProductType type) => t = true);
+                .Callback(() => t = true);
 
             var validator = new ProductTypeValidator(mock.Object);
             var service = new DataProvider<ProductType>(mock.Object, validator);
 
             // Act
-            service.Update(productType);
+            service.Update(entity);
 
             // Assert
             t.Should().BeTrue();
@@ -181,27 +181,27 @@
         {
             // Arrange
             var t = false;
-            var productType = new ProductType
+            var entity = new ProductType
             {
                 Id = 1,
                 Name = "Tech"
             };
-            var productTypes = GetTestProductTypes();
-            var expectedProductType = GetTestProductTypes()[productType.Id];
+            var entities = GetTestProductTypes();
+            var expectedEntity = GetTestProductTypes()[entity.Id];
 
             var mock = new Mock<IRepository<ProductType>>();
             mock.Setup(r => r.GetAll())
-                .Returns(productTypes);
+                .Returns(entities);
             mock.Setup(r => r.Get(It.IsAny<int>()))
-                .Returns(expectedProductType);
+                .Returns(expectedEntity);
             mock.Setup(r => r.Update(It.IsAny<ProductType>()))
-                .Callback((ProductType type) => t = true);
+                .Callback(() => t = true);
 
             var validator = new ProductTypeValidator(mock.Object);
             var service = new DataProvider<ProductType>(mock.Object, validator);
 
             // Act
-            service.Update(productType);
+            service.Update(entity);
 
             // Assert
             t.Should().BeFalse();
@@ -211,7 +211,7 @@
         public void Update_InvalidCall_ThrowsException()
         {
             // Arrange
-            var productType = new ProductType
+            var entity = new ProductType
             {
                 Id = -1,
                 Name = null
@@ -223,7 +223,7 @@
             var service = new DataProvider<ProductType>(mock.Object, validator);
 
             // Act
-            var act = () => service.Update(productType);
+            var act = () => service.Update(entity);
 
             // Assert
             act.Should().Throw<ValidationException>();
@@ -235,13 +235,13 @@
         {
             // Arrange
             var t = false;
-            var productTypes = GetTestProductTypes();
+            var entities = GetTestProductTypes();
 
             var mock = new Mock<IRepository<ProductType>>();
             mock.Setup(r => r.GetAll())
-                .Returns(productTypes);
+                .Returns(entities);
             mock.Setup(r => r.Delete(It.IsAny<int>()))
-                .Callback((int i) => t = true);
+                .Callback(() => t = true);
 
             var validator = new ProductTypeValidator(mock.Object);
             var service = new DataProvider<ProductType>(mock.Object, validator);
@@ -254,7 +254,7 @@
         }
 
 
-        private List<ProductType> GetTestProductTypes()
+        private static List<ProductType> GetTestProductTypes()
         {
             var output = new List<ProductType>
             {

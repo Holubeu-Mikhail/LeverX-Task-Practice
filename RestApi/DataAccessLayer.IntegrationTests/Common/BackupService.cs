@@ -4,9 +4,9 @@ namespace DataAccessLayer.IntegrationTests.Common
 {
     internal static class BackupService
     {
-        private static readonly string ConnectionString = "Data Source=LXIBY788;Initial Catalog=ProductsDb;Integrated Security=True";
+        private static readonly string ConnectionString = ConnectionService.GetConnectionString();
         private const string DatabaseName = "ProductsDb";
-        private const string BackupPath = "D:\\backup.bak";
+        private const string BackupPath = "D:\\Repositories\\LeverX-Task\\backup.bak";
 
         public static void CreateDatabaseBackup()
         {
