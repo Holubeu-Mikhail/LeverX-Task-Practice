@@ -5,34 +5,39 @@ go
 use ProductsDb
 
 go
-CREATE TABLE Towns (
-    Id int PRIMARY KEY  NOT NULL,
+CREATE TABLE Cities (
+    Id UNIQUEIDENTIFIER PRIMARY KEY DEFAULT NEWID(),
     Name nvarchar(100),
     Code int
 );
 
 go
 CREATE TABLE Brands (
-    Id int PRIMARY KEY  NOT NULL,
+    Id UNIQUEIDENTIFIER PRIMARY KEY DEFAULT NEWID(),
     Name nvarchar(100),
     Description nvarchar(100),
-	TownId int,
-  FOREIGN KEY (TownId) REFERENCES Towns (Id) ON DELETE CASCADE ON UPDATE CASCADE
+	CityId UNIQUEIDENTIFIER,
+  FOREIGN KEY (CityId) REFERENCES Cities (Id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 go
 CREATE TABLE ProductTypes (
-    Id int PRIMARY KEY  NOT NULL,
+    Id UNIQUEIDENTIFIER PRIMARY KEY DEFAULT NEWID(),
     Name nvarchar(20)
 );
 
 go
 CREATE TABLE Products (
-    Id int PRIMARY KEY  NOT NULL,
+    Id UNIQUEIDENTIFIER PRIMARY KEY DEFAULT NEWID(),
     Name nvarchar(100),
     Quantity int,
-    TypeId int,
-	BrandId int,
+    TypeId UNIQUEIDENTIFIER,
+	BrandId UNIQUEIDENTIFIER,
   FOREIGN KEY (TypeId) REFERENCES ProductTypes (Id) ON DELETE CASCADE ON UPDATE CASCADE,
   FOREIGN KEY (BrandId) REFERENCES Brands (Id) ON DELETE CASCADE ON UPDATE CASCADE
 );
+
+drop table Products
+drop table ProductTypes
+drop table Brands
+drop table Cities
