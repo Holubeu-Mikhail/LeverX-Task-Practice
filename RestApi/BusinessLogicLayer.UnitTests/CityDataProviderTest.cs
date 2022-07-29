@@ -1,6 +1,6 @@
 ﻿namespace BusinessLogicLayer.UnitTests
 {
-    public class TownDataProviderTest
+    public class CityDataProviderTest
     {
         [SetUp]
         public void Setup()
@@ -11,14 +11,14 @@
         public void GetAll_ValidCall_ReturnsList()
         {
             // Arrange
-            var entities = GetTestTowns();
+            var entities = GetTestCities().AsQueryable();
 
-            var mock = new Mock<IRepository<Town>>();
+            var mock = new Mock<IRepository<City>>();
             mock.Setup(r => r.GetAll())
                 .Returns(entities);
 
-            var validator = new TownValidator(mock.Object);
-            var service = new DataProvider<Town>(mock.Object, validator);
+            var validator = new CityValidator(mock.Object);
+            var service = new DataProvider<City>(mock.Object, validator);
 
             // Act
             var result = service.GetAll();
@@ -28,40 +28,38 @@
         }
 
         [Test]
-        [TestCase(1)]
-        public void Get_ValidCall_ReturnsEntity(int id)
+        public void Get_ValidCall_ReturnsEntity()
         {
             // Arrange
-            var expectedEntity = GetTestTowns()[id];
+            var expectedEntity = GetTestCities()[0];
 
-            var mock = new Mock<IRepository<Town>>();
-            mock.Setup(r => r.Get(It.IsAny<int>()))
+            var mock = new Mock<IRepository<City>>();
+            mock.Setup(r => r.Get(It.IsAny<Guid>()))
                 .Returns(expectedEntity);
 
-            var validator = new TownValidator(mock.Object);
-            var service = new DataProvider<Town>(mock.Object, validator);
+            var validator = new CityValidator(mock.Object);
+            var service = new DataProvider<City>(mock.Object, validator);
 
             // Act
-            var result = service.Get(id);
+            var result = service.Get(GetTestCities()[0].Id);
 
             // Assert
-            result.Should().NotBeNull().And.BeOfType(typeof(Town)).And.BeEquivalentTo(expectedEntity);
+            result.Should().NotBeNull().And.BeOfType(typeof(City)).And.BeEquivalentTo(expectedEntity);
         }
 
         [Test]
-        [TestCase(-1)]
-        public void Get_InvalidCall_ReturnsNull(int id)
+        public void Get_InvalidCall_ReturnsNull()
         {
             // Arrange
-            var mock = new Mock<IRepository<Town>>();
-            mock.Setup(r => r.Get(It.IsAny<int>()))
-                .Returns((Town)null);
+            var mock = new Mock<IRepository<City>>();
+            mock.Setup(r => r.Get(It.IsAny<Guid>()))
+                .Returns((City)null);
 
-            var validator = new TownValidator(mock.Object);
-            var service = new DataProvider<Town>(mock.Object, validator);
+            var validator = new CityValidator(mock.Object);
+            var service = new DataProvider<City>(mock.Object, validator);
 
             // Act
-            var result = service.Get(id);
+            var result = service.Get(Guid.NewGuid());
 
             // Assert
             result.Should().BeNull();
@@ -72,22 +70,21 @@
         {
             // Arrange
             var t = false;
-            var entity = new Town
+            var entity = new City
             {
-                Id = 6,
                 Name = "London",
                 Code = 100
             };
-            var entities = GetTestTowns();
+            var entities = GetTestCities().AsQueryable();
 
-            var mock = new Mock<IRepository<Town>>();
+            var mock = new Mock<IRepository<City>>();
             mock.Setup(r => r.GetAll())
                 .Returns(entities);
-            mock.Setup(r => r.Create(It.IsAny<Town>()))
+            mock.Setup(r => r.Create(It.IsAny<City>()))
                 .Callback(() => t = true);
 
-            var validator = new TownValidator(mock.Object);
-            var service = new DataProvider<Town>(mock.Object, validator);
+            var validator = new CityValidator(mock.Object);
+            var service = new DataProvider<City>(mock.Object, validator);
 
             // Act
             service.Create(entity);
@@ -101,22 +98,21 @@
         {
             // Arrange
             var t = false;
-            var entity = new Town
+            var entity = new City
             {
-                Id = 6,
                 Name = "Minsk",
                 Code = 200
             };
-            var entities = GetTestTowns();
+            var entities = GetTestCities().AsQueryable();
 
-            var mock = new Mock<IRepository<Town>>();
+            var mock = new Mock<IRepository<City>>();
             mock.Setup(r => r.GetAll())
                 .Returns(entities);
-            mock.Setup(r => r.Create(It.IsAny<Town>()))
+            mock.Setup(r => r.Create(It.IsAny<City>()))
                 .Callback(() => t = true);
 
-            var validator = new TownValidator(mock.Object);
-            var service = new DataProvider<Town>(mock.Object, validator);
+            var validator = new CityValidator(mock.Object);
+            var service = new DataProvider<City>(mock.Object, validator);
 
             // Act
             service.Create(entity);
@@ -129,17 +125,17 @@
         public void Create_InvalidCall_ThrowsException()
         {
             // Arrange
-            var entity = new Town
+            var entity = new City
             {
-                Id = -1,
+                Id = Guid.Empty,
                 Name = null,
                 Code = -1
             };
 
-            var mock = new Mock<IRepository<Town>>();
+            var mock = new Mock<IRepository<City>>();
 
-            var validator = new TownValidator(mock.Object);
-            var service = new DataProvider<Town>(mock.Object, validator);
+            var validator = new CityValidator(mock.Object);
+            var service = new DataProvider<City>(mock.Object, validator);
 
             // Act
             var act = () => service.Create(entity);
@@ -153,25 +149,25 @@
         {
             // Arrange
             var t = false;
-            var entity = new Town
+            var entity = new City
             {
-                Id = 1,
+                Id = GetTestCities()[0].Id,
                 Name = "New York",
                 Code = 21
             };
-            var entities = GetTestTowns();
-            var expectedEntity = GetTestTowns()[entity.Id];
+            var entities = GetTestCities().AsQueryable();
+            var expectedEntity = GetTestCities()[0];
 
-            var mock = new Mock<IRepository<Town>>();
+            var mock = new Mock<IRepository<City>>();
             mock.Setup(r => r.GetAll())
                 .Returns(entities);
-            mock.Setup(r => r.Get(It.IsAny<int>()))
+            mock.Setup(r => r.Get(It.IsAny<Guid>()))
                 .Returns(expectedEntity);
-            mock.Setup(r => r.Update(It.IsAny<Town>()))
+            mock.Setup(r => r.Update(It.IsAny<City>()))
                 .Callback(() => t = true);
 
-            var validator = new TownValidator(mock.Object);
-            var service = new DataProvider<Town>(mock.Object, validator);
+            var validator = new CityValidator(mock.Object);
+            var service = new DataProvider<City>(mock.Object, validator);
 
             // Act
             service.Update(entity);
@@ -185,25 +181,25 @@
         {
             // Arrange
             var t = false;
-            var entity = new Town
+            var entity = new City
             {
-                Id = 1,
+                Id = GetTestCities()[0].Id,
                 Name = "Minsk",
                 Code = 22
             };
-            var entities = GetTestTowns();
-            var expectedEntity = GetTestTowns()[entity.Id];
+            var entities = GetTestCities().AsQueryable();
+            var expectedEntity = GetTestCities()[0];
 
-            var mock = new Mock<IRepository<Town>>();
+            var mock = new Mock<IRepository<City>>();
             mock.Setup(r => r.GetAll())
                 .Returns(entities);
-            mock.Setup(r => r.Get(It.IsAny<int>()))
+            mock.Setup(r => r.Get(It.IsAny<Guid>()))
                 .Returns(expectedEntity);
-            mock.Setup(r => r.Update(It.IsAny<Town>()))
+            mock.Setup(r => r.Update(It.IsAny<City>()))
                 .Callback(() => t = true);
 
-            var validator = new TownValidator(mock.Object);
-            var service = new DataProvider<Town>(mock.Object, validator);
+            var validator = new CityValidator(mock.Object);
+            var service = new DataProvider<City>(mock.Object, validator);
 
             // Act
             service.Update(entity);
@@ -216,17 +212,17 @@
         public void Update_InvalidCall_ThrowsException()
         {
             // Arrange
-            var entity = new Town
+            var entity = new City
             {
-                Id = -1,
+                Id = Guid.Empty,
                 Name = null,
                 Code = -1
             };
 
-            var mock = new Mock<IRepository<Town>>();
+            var mock = new Mock<IRepository<City>>();
 
-            var validator = new TownValidator(mock.Object);
-            var service = new DataProvider<Town>(mock.Object, validator);
+            var validator = new CityValidator(mock.Object);
+            var service = new DataProvider<City>(mock.Object, validator);
 
             // Act
             var act = () => service.Update(entity);
@@ -236,49 +232,48 @@
         }
 
         [Test]
-        [TestCase(1)]
-        public void Delete_ValidCall_RepositoryMethodInvokes(int id)
+        public void Delete_ValidCall_RepositoryMethodInvokes()
         {
             // Arrange
             var t = false;
-            var entities = GetTestTowns();
+            var entities = GetTestCities().AsQueryable();
 
-            var mock = new Mock<IRepository<Town>>();
+            var mock = new Mock<IRepository<City>>();
             mock.Setup(r => r.GetAll())
                 .Returns(entities);
-            mock.Setup(r => r.Delete(It.IsAny<int>()))
+            mock.Setup(r => r.Delete(It.IsAny<Guid>()))
                 .Callback(() => t = true);
 
-            var validator = new TownValidator(mock.Object);
-            var service = new DataProvider<Town>(mock.Object, validator);
+            var validator = new CityValidator(mock.Object);
+            var service = new DataProvider<City>(mock.Object, validator);
 
             // Act
-            service.Delete(id);
+            service.Delete(GetTestCities()[0].Id);
 
             // Assert
             t.Should().BeTrue();
         }
 
 
-        private static List<Town> GetTestTowns()
+        private static IList<City> GetTestCities()
         {
-            var output = new List<Town>
+            var output = new List<City>
             {
-                new Town
+                new City
                 {
-                    Id = 1,
+                    Id = Guid.NewGuid(),
                     Name = "Moscow",
                     Code = 100
                 },
-                new Town
+                new City
                 {
-                    Id = 2,
+                    Id = Guid.NewGuid(),
                     Name = "Brest",
                     Code = 200
                 },
-                new Town
+                new City
                 {
-                    Id = 3,
+                    Id = Guid.NewGuid(),
                     Name = "Minsk",
                     Code = 300
                 }

@@ -1,4 +1,5 @@
-﻿using DataAccessLayer.IntegrationTests.Common;
+﻿using DataAccessLayer.DbContexts;
+using DataAccessLayer.IntegrationTests.Common;
 using DataAccessLayer.IntegrationTests.Helpers;
 using DataAccessLayer.Interfaces;
 using DataAccessLayer.Models;
@@ -14,14 +15,14 @@ namespace DataAccessLayer.IntegrationTests.RepositoryTests
         [SetUp]
         public void Setup()
         {
-            var optionsBuilder = new DbContextOptionsBuilder<AppDbContext>();
+            var optionsBuilder = new DbContextOptionsBuilder<EntityDbContext>();
             optionsBuilder.UseSqlServer(ConnectionService.GetConnectionString());
-            var dbContext = new AppDbContext(optionsBuilder.Options);
+            var dbContext = new EntityDbContext(optionsBuilder.Options);
 
             _repository = new EntityRepository<Brand>(dbContext);
             BackupService.CreateDatabaseBackup();
             DataHelper.DeleteAllFromDatabase();
-            TownDataHelper.FillTable();
+            CityDataHelper.FillTable();
             BrandDataHelper.FillTable();
             ProductTypeDataHelper.FillTable();
             ProductDataHelper.FillTable();
@@ -37,7 +38,7 @@ namespace DataAccessLayer.IntegrationTests.RepositoryTests
         public void GetAll_ValidCall_GetAllItemsFromDatabase()
         {
             //Arrange
-            var expectedEntities = new List<Brand> { new Brand { Id = 1, Name = "Apple", Description = "American company", TownId = 1 } };
+            var expectedEntities = new List<Brand> { new Brand { Name = "Apple", Description = "American company", CityId = DataHelper.CityId } };
 
             //Act
             var entities = _repository.GetAll().ToList();
@@ -50,10 +51,10 @@ namespace DataAccessLayer.IntegrationTests.RepositoryTests
         public void Get_ValidCall_GetItemFromDatabase()
         {
             //Arrange
-            var expectedEntity = new Brand { Id = 1, Name = "Apple", Description = "American company", TownId = 1 };
+            var expectedEntity = new Brand { Id = DataHelper.BrandId, Name = "Apple", Description = "American company", CityId = DataHelper.CityId };
 
             //Act
-            var entity = _repository.Get(1);
+            var entity = _repository.Get(DataHelper.BrandId);
 
             //Assert
             entity.Should().BeEquivalentTo(expectedEntity);
@@ -63,9 +64,10 @@ namespace DataAccessLayer.IntegrationTests.RepositoryTests
         public void Create_ValidCall_InsertItemInDatabase()
         {
             //Arrange
-            var entities = new List<Brand> { new Brand { Id = 1, Name = "Apple", Description = "American company", TownId = 1 },
-                new Brand { Id = 2, Name = "Samsung", Description = "European company", TownId = 1 } };
-            var entity = new Brand { Id = 2, Name = "Samsung", Description = "European company", TownId = 1 };
+            var guid = new Guid("dc3f8b75-5414-4775-9f3b-dbeaef579df6");
+            var entities = new List<Brand> { new Brand { Id = DataHelper.BrandId, Name = "Apple", Description = "American company", CityId = DataHelper.CityId },
+                new Brand { Id = guid, Name = "Samsung", Description = "European company", CityId = DataHelper.CityId } };
+            var entity = new Brand { Id = guid, Name = "Samsung", Description = "European company", CityId = DataHelper.CityId };
 
             //Act
             _repository.Create(entity);
@@ -78,7 +80,7 @@ namespace DataAccessLayer.IntegrationTests.RepositoryTests
         public void Update_ValidCall_UpdateItemInDatabase()
         {
             //Arrange
-            var entity = new Brand { Id = 1, Name = "Xiaomi", Description = "Chinese company", TownId = 1 };
+            var entity = new Brand { Id = DataHelper.BrandId, Name = "Xiaomi", Description = "Chinese company", CityId = DataHelper.CityId };
             var entities = new List<Brand> { entity };
 
             //Act
@@ -92,10 +94,10 @@ namespace DataAccessLayer.IntegrationTests.RepositoryTests
         public void Delete_ValidCall_UpdateItemInDatabase()
         {
             //Arrange
-            var entities = new List<Brand> { new Brand { Id = 1, Name = "Apple", Description = "American company", TownId = 1 } };
-            var entity = new Brand { Id = 2, Name = "Samsung", Description = "European company", TownId = 1 };
+            var entities = new List<Brand> { new Brand { Id = DataHelper.BrandId, Name = "Apple", Description = "American company", CityId = DataHelper.CityId } };
+            var entity = new Brand { Id = Guid.NewGuid(), Name = "Samsung", Description = "European company", CityId = DataHelper.CityId };
             _repository.Create(entity);
-            var id = 2;
+            var id = entity.Id;
 
             //Act
             _repository.Delete(id);

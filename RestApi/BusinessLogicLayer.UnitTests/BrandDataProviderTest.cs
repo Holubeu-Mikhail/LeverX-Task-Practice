@@ -11,7 +11,7 @@
         public void GetAll_ValidCall_ReturnsList()
         {
             // Arrange
-            var entities = GetTestBrands();
+            var entities = GetTestBrands().AsQueryable();
 
             var mock = new Mock<IRepository<Brand>>();
             mock.Setup(r => r.GetAll())
@@ -35,33 +35,32 @@
             var expectedEntity = GetTestBrands()[id];
 
             var mock = new Mock<IRepository<Brand>>();
-            mock.Setup(r => r.Get(It.IsAny<int>()))
+            mock.Setup(r => r.Get(It.IsAny<Guid>()))
                 .Returns(expectedEntity);
 
             var validator = new BrandValidator(mock.Object);
             var service = new DataProvider<Brand>(mock.Object, validator);
 
             // Act
-            var result = service.Get(id);
+            var result = service.Get(GetTestBrands()[id].Id);
 
             // Assert
             result.Should().NotBeNull().And.BeOfType(typeof(Brand)).And.BeEquivalentTo(expectedEntity);
         }
 
         [Test]
-        [TestCase(-1)]
-        public void Get_InvalidCall_ReturnsNull(int id)
+        public void Get_InvalidCall_ReturnsNull()
         {
             // Arrange
             var mock = new Mock<IRepository<Brand>>();
-            mock.Setup(r => r.Get(It.IsAny<int>()))
+            mock.Setup(r => r.Get(It.IsAny<Guid>()))
                 .Returns((Brand)null);
 
             var validator = new BrandValidator(mock.Object);
             var service = new DataProvider<Brand>(mock.Object, validator);
 
             // Act
-            var result = service.Get(id);
+            var result = service.Get(Guid.Empty);
 
             // Assert
             result.Should().BeNull();
@@ -74,12 +73,11 @@
             var t = false;
             var entity = new Brand
             {
-                Id = 6,
                 Name = "Xiaomi",
                 Description = "Chinese electronics company",
-                TownId = 10
+                CityId = Guid.NewGuid()
             };
-            var entities = GetTestBrands();
+            var entities = GetTestBrands().AsQueryable();
 
             var mock = new Mock<IRepository<Brand>>();
             mock.Setup(r => r.GetAll())
@@ -102,14 +100,13 @@
         {
             // Arrange
             var t = false;
+            var entities = GetTestBrands().AsQueryable();
             var entity = new Brand
             {
-                Id = 6,
                 Name = "Apple",
                 Description = "Chinese electronics company",
-                TownId = 1
+                CityId = entities.ToList()[0].CityId
             };
-            var entities = GetTestBrands();
 
             var mock = new Mock<IRepository<Brand>>();
             mock.Setup(r => r.GetAll())
@@ -133,10 +130,9 @@
             // Arrange
             var entity = new Brand
             {
-                Id = -1,
                 Name = null,
                 Description = null,
-                TownId = -1
+                CityId = Guid.Empty
             };
 
             var mock = new Mock<IRepository<Brand>>();
@@ -158,18 +154,18 @@
             var t = false;
             var entity = new Brand
             {
-                Id = 1,
+                Id = GetTestBrands()[0].Id,
                 Name = "ZTE",
                 Description = "Asian electronics company",
-                TownId = 20
+                CityId = Guid.NewGuid()
             };
-            var entities = GetTestBrands();
-            var expectedEntity = GetTestBrands()[entity.Id];
+            var entities = GetTestBrands().AsQueryable();
+            var expectedEntity = GetTestBrands()[0];
 
             var mock = new Mock<IRepository<Brand>>();
             mock.Setup(r => r.GetAll())
                 .Returns(entities);
-            mock.Setup(r => r.Get(It.IsAny<int>()))
+            mock.Setup(r => r.Get(It.IsAny<Guid>()))
                 .Returns(expectedEntity);
             mock.Setup(r => r.Update(It.IsAny<Brand>()))
                 .Callback(() => t = true);
@@ -189,20 +185,20 @@
         {
             // Arrange
             var t = false;
+            var entities = GetTestBrands().AsQueryable();
             var entity = new Brand
             {
-                Id = 1,
+                Id = GetTestBrands()[0].Id,
                 Name = "Apple",
                 Description = "American electronics company",
-                TownId = 1
+                CityId = entities.ToList()[0].CityId
             };
-            var entities = GetTestBrands();
-            var expectedEntity = GetTestBrands()[entity.Id];
+            var expectedEntity = GetTestBrands()[0];
 
             var mock = new Mock<IRepository<Brand>>();
             mock.Setup(r => r.GetAll())
                 .Returns(entities);
-            mock.Setup(r => r.Get(It.IsAny<int>()))
+            mock.Setup(r => r.Get(It.IsAny<Guid>()))
                 .Returns(expectedEntity);
             mock.Setup(r => r.Update(It.IsAny<Brand>()))
                 .Callback(() => t = true);
@@ -223,10 +219,10 @@
             // Arrange
             var entity = new Brand
             {
-                Id = -1,
+                Id = Guid.Empty,
                 Name = null,
                 Description = null,
-                TownId = -1
+                CityId = Guid.Empty
             };
 
             var mock = new Mock<IRepository<Brand>>();
@@ -242,29 +238,27 @@
         }
 
         [Test]
-        [TestCase(1)]
-        public void Delete_ValidCall_RepositoryMethodInvokes(int id)
+        public void Delete_ValidCall_RepositoryMethodInvokes()
         {
             // Arrange
             var t = false;
-            var entities = GetTestBrands();
+            var entities = GetTestBrands().AsQueryable();
 
             var mock = new Mock<IRepository<Brand>>();
             mock.Setup(r => r.GetAll())
                 .Returns(entities);
-            mock.Setup(r => r.Delete(It.IsAny<int>()))
+            mock.Setup(r => r.Delete(It.IsAny<Guid>()))
                 .Callback(() => t = true);
 
             var validator = new BrandValidator(mock.Object);
             var service = new DataProvider<Brand>(mock.Object, validator);
 
             // Act
-            service.Delete(id);
+            service.Delete(GetTestBrands()[0].Id);
 
             // Assert
             t.Should().BeTrue();
         }
-
 
         private static List<Brand> GetTestBrands()
         {
@@ -272,24 +266,24 @@
             {
                 new Brand
                 {
-                    Id = 1,
+                    Id = Guid.NewGuid(),
                     Name = "Apple",
                     Description = "Electronics manufacture",
-                    TownId = 1
+                    CityId = Guid.NewGuid()
                 },
                 new Brand
                 {
-                    Id = 2,
+                    Id = Guid.NewGuid(),
                     Name = "Milkavita",
                     Description = "Milk products",
-                    TownId = 2
+                    CityId = Guid.NewGuid()
                 },
                 new Brand
                 {
-                    Id = 3,
+                    Id = Guid.NewGuid(),
                     Name = "Samsung",
                     Description = "Electronics manufacture",
-                    TownId = 3
+                    CityId = Guid.NewGuid()
                 }
             };
 

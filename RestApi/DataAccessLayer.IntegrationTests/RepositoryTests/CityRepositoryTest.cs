@@ -1,4 +1,5 @@
-﻿using DataAccessLayer.IntegrationTests.Common;
+﻿using DataAccessLayer.DbContexts;
+using DataAccessLayer.IntegrationTests.Common;
 using DataAccessLayer.IntegrationTests.Helpers;
 using DataAccessLayer.Interfaces;
 using DataAccessLayer.Models;
@@ -7,21 +8,21 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DataAccessLayer.IntegrationTests.RepositoryTests
 {
-    internal class TownRepositoryTest
+    internal class CityRepositoryTest
     {
-        private IRepository<Town> _repository;
+        private IRepository<City> _repository;
 
         [SetUp]
         public void Setup()
         {
-            var optionsBuilder = new DbContextOptionsBuilder<AppDbContext>();
+            var optionsBuilder = new DbContextOptionsBuilder<EntityDbContext>();
             optionsBuilder.UseSqlServer(ConnectionService.GetConnectionString());
-            var dbContext = new AppDbContext(optionsBuilder.Options);
+            var dbContext = new EntityDbContext(optionsBuilder.Options);
 
-            _repository = new EntityRepository<Town>(dbContext);
+            _repository = new EntityRepository<City>(dbContext);
             BackupService.CreateDatabaseBackup();
             DataHelper.DeleteAllFromDatabase();
-            TownDataHelper.FillTable();
+            CityDataHelper.FillTable();
             BrandDataHelper.FillTable();
             ProductTypeDataHelper.FillTable();
             ProductDataHelper.FillTable();
@@ -37,7 +38,7 @@ namespace DataAccessLayer.IntegrationTests.RepositoryTests
         public void GetAll_ValidCall_GetAllItemsFromDatabase()
         {
             //Arrange
-            var expectedEntities = new List<Town> { new Town { Id = 1, Name = "Zhlobin", Code = 201 } };
+            var expectedEntities = new List<City> { new City { Id = DataHelper.CityId, Name = "Zhlobin", Code = 201 } };
 
             //Act
             var entities = _repository.GetAll().ToList();
@@ -50,10 +51,10 @@ namespace DataAccessLayer.IntegrationTests.RepositoryTests
         public void Get_ValidCall_GetItemFromDatabase()
         {
             //Arrange
-            var expectedEntity = new Town { Id = 1, Name = "Zhlobin", Code = 201 };
+            var expectedEntity = new City { Id = DataHelper.CityId, Name = "Zhlobin", Code = 201 };
 
             //Act
-            var entity = _repository.Get(1);
+            var entity = _repository.Get(DataHelper.CityId);
 
             //Assert
             entity.Should().BeEquivalentTo(expectedEntity);
@@ -63,9 +64,10 @@ namespace DataAccessLayer.IntegrationTests.RepositoryTests
         public void Create_ValidCall_InsertItemInDatabase()
         {
             //Arrange
-            var entities = new List<Town> { new Town { Id = 1, Name = "Zhlobin", Code = 201 },
-                new Town { Id = 2, Name = "Homel", Code = 242 } };
-            var entity = new Town { Id = 2, Name = "Homel", Code = 242 };
+            var guid = new Guid("dc3f8b75-5414-4775-9f3b-dbeaef579df6");
+            var entities = new List<City> { new City { Id = DataHelper.CityId, Name = "Zhlobin", Code = 201 },
+                new City { Id = guid, Name = "Homel", Code = 242 } };
+            var entity = new City { Id = guid, Name = "Homel", Code = 242 };
 
             //Act
             _repository.Create(entity);
@@ -78,8 +80,8 @@ namespace DataAccessLayer.IntegrationTests.RepositoryTests
         public void Update_ValidCall_UpdateItemInDatabase()
         {
             //Arrange
-            var entity = new Town { Id = 1, Name = "Minsk", Code = 232 };
-            var entities = new List<Town> { entity };
+            var entity = new City { Id = DataHelper.CityId, Name = "Minsk", Code = 232 };
+            var entities = new List<City> { entity };
 
             //Act
             _repository.Update(entity);
@@ -92,10 +94,10 @@ namespace DataAccessLayer.IntegrationTests.RepositoryTests
         public void Delete_ValidCall_UpdateItemInDatabase()
         {
             //Arrange
-            var entities = new List<Town> { new Town { Id = 1, Name = "Zhlobin", Code = 201 } };
-            var entity = new Town { Id = 2, Name = "Minsk", Code = 232 };
+            var entities = new List<City> { new City { Id = DataHelper.CityId, Name = "Zhlobin", Code = 201 } };
+            var entity = new City { Id = Guid.NewGuid(), Name = "Minsk", Code = 232 };
             _repository.Create(entity);
-            var id = 2;
+            var id = entity.Id;
 
             //Act
             _repository.Delete(id);

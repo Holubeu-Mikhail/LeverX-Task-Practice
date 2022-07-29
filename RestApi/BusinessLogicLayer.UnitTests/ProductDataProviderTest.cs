@@ -11,11 +11,11 @@ namespace BusinessLogicLayer.UnitTests
         public void GetAll_ValidCall_ReturnsList()
         {
             // Arrange
-            var entities = GetTestProducts();
+            var entities = GetTestProducts().AsQueryable();
 
             var mock = new Mock<IRepository<Product>>();
             mock.Setup(r => r.GetAll())
-                .Returns(entities.AsQueryable());
+                .Returns(entities);
 
             var validator = new ProductValidator(mock.Object);
             var service = new DataProvider<Product>(mock.Object, validator);
@@ -28,40 +28,38 @@ namespace BusinessLogicLayer.UnitTests
         }
 
         [Test]
-        [TestCase(1)]
-        public void Get_ValidCall_ReturnsEntity(int id)
+        public void Get_ValidCall_ReturnsEntity()
         {
             // Arrange
-            var expectedEntity = GetTestProducts()[id];
+            var expectedEntity = GetTestProducts()[0];
 
             var mock = new Mock<IRepository<Product>>();
-            mock.Setup(r => r.Get(It.IsAny<int>()))
+            mock.Setup(r => r.Get(It.IsAny<Guid>()))
                 .Returns(expectedEntity);
 
             var validator = new ProductValidator(mock.Object);
             var service = new DataProvider<Product>(mock.Object, validator);
 
             // Act
-            var result = service.Get(id);
+            var result = service.Get(GetTestProducts()[0].Id);
 
             // Assert
             result.Should().NotBeNull().And.BeOfType(typeof(Product)).And.BeEquivalentTo(expectedEntity);
         }
 
         [Test]
-        [TestCase(-1)]
-        public void Get_InvalidCall_ReturnsNull(int id)
+        public void Get_InvalidCall_ReturnsNull()
         {
             // Arrange
             var mock = new Mock<IRepository<Product>>();
-            mock.Setup(r => r.Get(It.IsAny<int>()))
+            mock.Setup(r => r.Get(It.IsAny<Guid>()))
                 .Returns((Product)null);
 
             var validator = new ProductValidator(mock.Object);
             var service = new DataProvider<Product>(mock.Object, validator);
 
             // Act
-            var result = service.Get(id);
+            var result = service.Get(Guid.NewGuid());
 
             // Assert
             result.Should().BeNull();
@@ -74,12 +72,12 @@ namespace BusinessLogicLayer.UnitTests
             var t = false;
             var entity = new Product
             {
-                Id = 6,
                 Name = "Fish",
                 Quantity = 7,
-                TypeId = 1
+                TypeId = Guid.NewGuid(),
+                BrandId = Guid.NewGuid()
             };
-            var entities = GetTestProducts();
+            var entities = GetTestProducts().AsQueryable();
 
             var mock = new Mock<IRepository<Product>>();
             mock.Setup(r => r.GetAll())
@@ -102,15 +100,14 @@ namespace BusinessLogicLayer.UnitTests
         {
             // Arrange
             var t = false;
+            var entities = GetTestProducts().AsQueryable();
             var entity = new Product
             {
-                Id = 6,
                 Name = "Cheese",
                 Quantity = 7,
-                TypeId = 1, 
-                BrandId = 1
+                TypeId = entities.ToList()[1].TypeId, 
+                BrandId = Guid.NewGuid()
             };
-            var entities = GetTestProducts();
 
             var mock = new Mock<IRepository<Product>>();
             mock.Setup(r => r.GetAll())
@@ -134,10 +131,9 @@ namespace BusinessLogicLayer.UnitTests
             // Arrange
             var entity = new Product
             {
-                Id = -1,
                 Name = null,
-                Quantity = -1,
-                TypeId = -1
+                Quantity = -10,
+                TypeId = Guid.Empty
             };
 
             var mock = new Mock<IRepository<Product>>();
@@ -159,19 +155,19 @@ namespace BusinessLogicLayer.UnitTests
             var t = false;
             var entity = new Product
             {
-                Id = 1,
+                Id = GetTestProducts()[0].Id,
                 Name = "Juice",
                 Quantity = 21,
-                TypeId = 2, 
-                BrandId = 1
+                TypeId = Guid.NewGuid(), 
+                BrandId = Guid.NewGuid()
             };
-            var entities = GetTestProducts();
-            var expectedEntity = GetTestProducts()[entity.Id];
+            var entities = GetTestProducts().AsQueryable();
+            var expectedEntity = GetTestProducts()[0];
 
             var mock = new Mock<IRepository<Product>>();
             mock.Setup(r => r.GetAll())
                 .Returns(entities);
-            mock.Setup(r => r.Get(It.IsAny<int>()))
+            mock.Setup(r => r.Get(It.IsAny<Guid>()))
                 .Returns(expectedEntity);
             mock.Setup(r => r.Update(It.IsAny<Product>()))
                 .Callback(() => t = true);
@@ -191,21 +187,21 @@ namespace BusinessLogicLayer.UnitTests
         {
             // Arrange
             var t = false;
+            var entities = GetTestProducts().AsQueryable();
             var entity = new Product
             {
-                Id = 1,
+                Id = GetTestProducts()[0].Id,
                 Name = "Cake",
                 Quantity = 21,
-                TypeId = 1,
-                BrandId = 2
+                TypeId = entities.ToList()[4].TypeId,
+                BrandId = Guid.NewGuid()
             };
-            var entities = GetTestProducts();
-            var expectedEntity = GetTestProducts()[entity.Id];
+            var expectedEntity = GetTestProducts()[0];
 
             var mock = new Mock<IRepository<Product>>();
             mock.Setup(r => r.GetAll())
                 .Returns(entities);
-            mock.Setup(r => r.Get(It.IsAny<int>()))
+            mock.Setup(r => r.Get(It.IsAny<Guid>()))
                 .Returns(expectedEntity);
             mock.Setup(r => r.Update(It.IsAny<Product>()))
                 .Callback(() => t = true);
@@ -226,11 +222,11 @@ namespace BusinessLogicLayer.UnitTests
             // Arrange
             var entity = new Product
             {
-                Id = -1,
+                Id = Guid.Empty,
                 Name = null,
                 Quantity = -1,
-                TypeId = -1,
-                BrandId = -1
+                TypeId = Guid.Empty,
+                BrandId = Guid.Empty
             };
 
             var mock = new Mock<IRepository<Product>>();
@@ -246,24 +242,23 @@ namespace BusinessLogicLayer.UnitTests
         }
 
         [Test]
-        [TestCase(1)]
-        public void Delete_ValidCall_RepositoryMethodInvokes(int id)
+        public void Delete_ValidCall_RepositoryMethodInvokes()
         {
             // Arrange
             var t = false;
-            var entities = GetTestProducts();
+            var entities = GetTestProducts().AsQueryable();
 
             var mock = new Mock<IRepository<Product>>();
             mock.Setup(r => r.GetAll())
                 .Returns(entities);
-            mock.Setup(r => r.Delete(It.IsAny<int>()))
+            mock.Setup(r => r.Delete(It.IsAny<Guid>()))
                 .Callback(() => t = true);
 
             var validator = new ProductValidator(mock.Object);
             var service = new DataProvider<Product>(mock.Object, validator);
 
             // Act
-            service.Delete(id);
+            service.Delete(GetTestProducts()[0].Id);
 
             // Assert
             t.Should().BeTrue();
@@ -276,43 +271,43 @@ namespace BusinessLogicLayer.UnitTests
             {
                 new Product
                 {
-                    Id = 1,
+                    Id = Guid.NewGuid(),
                     Name = "Salad",
                     Quantity = 25,
-                    TypeId = 1,
-                    BrandId = 1
+                    TypeId = Guid.NewGuid(),
+                    BrandId = Guid.NewGuid()
                 },
                 new Product
                 {
-                    Id = 2,
+                    Id = Guid.NewGuid(),
                     Name = "Cheese",
                     Quantity = 19,
-                    TypeId = 1,
-                    BrandId = 1
+                    TypeId = Guid.NewGuid(),
+                    BrandId = Guid.NewGuid()
                 },
                 new Product
                 {
-                    Id = 3,
+                    Id = Guid.NewGuid(),
                     Name = "Coffee",
                     Quantity = 36,
-                    TypeId = 2,
-                    BrandId = 1
+                    TypeId = Guid.NewGuid(),
+                    BrandId = Guid.NewGuid()
                 },
                 new Product
                 {
-                    Id = 4,
+                    Id = Guid.NewGuid(),
                     Name = "Tea",
                     Quantity = 14,
-                    TypeId = 2,
-                    BrandId = 1
+                    TypeId = Guid.NewGuid(),
+                    BrandId = Guid.NewGuid()
                 },
                 new Product
                 {
-                    Id = 5,
+                    Id = Guid.NewGuid(),
                     Name = "Cake",
                     Quantity = 1,
-                    TypeId = 1,
-                    BrandId = 1
+                    TypeId = Guid.NewGuid(),
+                    BrandId = Guid.NewGuid()
                 },
             };
 

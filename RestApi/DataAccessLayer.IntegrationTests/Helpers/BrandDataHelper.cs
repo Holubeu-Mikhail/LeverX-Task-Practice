@@ -13,13 +13,13 @@ namespace DataAccessLayer.IntegrationTests.Helpers
             var tableName = "Brands";
 
             var sqlExpression =
-                $"INSERT INTO {tableName} (Id, Name, Description, TownId) VALUES (@Id, @Name, @Description, @TownId)"; ;
+                $"INSERT INTO {tableName} (Id, Name, Description, CityId) VALUES (@Id, @Name, @Description, @CityId)"; ;
 
             var command = new SqlCommand(sqlExpression, connection);
-            command.Parameters.AddWithValue("@Id", 1);
+            command.Parameters.AddWithValue("@Id", DataHelper.BrandId);
             command.Parameters.AddWithValue("@Name", "Apple");
             command.Parameters.AddWithValue("@Description", "American company");
-            command.Parameters.AddWithValue("@TownId", 1);
+            command.Parameters.AddWithValue("@CityId", DataHelper.CityId);
             command.ExecuteNonQuery();
 
             connection.Close();

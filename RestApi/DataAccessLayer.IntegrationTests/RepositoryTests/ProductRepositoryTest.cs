@@ -1,4 +1,5 @@
-﻿using DataAccessLayer.IntegrationTests.Common;
+﻿using DataAccessLayer.DbContexts;
+using DataAccessLayer.IntegrationTests.Common;
 using DataAccessLayer.IntegrationTests.Helpers;
 using DataAccessLayer.Interfaces;
 using DataAccessLayer.Models;
@@ -14,14 +15,14 @@ namespace DataAccessLayer.IntegrationTests.RepositoryTests
         [SetUp]
         public void Setup()
         {
-            var optionsBuilder = new DbContextOptionsBuilder<AppDbContext>();
+            var optionsBuilder = new DbContextOptionsBuilder<EntityDbContext>();
             optionsBuilder.UseSqlServer(ConnectionService.GetConnectionString());
-            var dbContext = new AppDbContext(optionsBuilder.Options);
+            var dbContext = new EntityDbContext(optionsBuilder.Options);
 
             _repository = new EntityRepository<Product>(dbContext);
             BackupService.CreateDatabaseBackup();
             DataHelper.DeleteAllFromDatabase();
-            TownDataHelper.FillTable();
+            CityDataHelper.FillTable();
             BrandDataHelper.FillTable();
             ProductTypeDataHelper.FillTable();
             ProductDataHelper.FillTable();
@@ -37,7 +38,7 @@ namespace DataAccessLayer.IntegrationTests.RepositoryTests
         public void GetAll_ValidCall_GetAllItemsFromDatabase()
         {
             //Arrange
-            var expectedEntities = new List<Product> { new Product { Id = 1, Name = "Fish", Quantity = 1, TypeId = 1, BrandId = 1} };
+            var expectedEntities = new List<Product> { new Product { Id = DataHelper.ProductId, Name = "Fish", Quantity = 1, TypeId = DataHelper.ProductTypeId, BrandId = DataHelper.BrandId } };
 
             //Act
             var entities = _repository.GetAll().ToList();
@@ -50,10 +51,10 @@ namespace DataAccessLayer.IntegrationTests.RepositoryTests
         public void Get_ValidCall_GetItemFromDatabase()
         {
             //Arrange
-            var expectedEntity = new Product { Id = 1, Name = "Fish", Quantity = 1, BrandId = 1, TypeId = 1 };
+            var expectedEntity = new Product { Id = DataHelper.ProductId, Name = "Fish", Quantity = 1, BrandId = DataHelper.BrandId, TypeId = DataHelper.ProductTypeId };
 
             //Act
-            var entity = _repository.Get(1);
+            var entity = _repository.Get(DataHelper.ProductId);
 
             //Assert
             entity.Should().BeEquivalentTo(expectedEntity);
@@ -63,9 +64,10 @@ namespace DataAccessLayer.IntegrationTests.RepositoryTests
         public void Create_ValidCall_InsertItemInDatabase()
         {
             //Arrange
-            var entities = new List<Product> { new Product { Id = 1, Name = "Fish", Quantity = 1, BrandId = 1, TypeId = 1 },
-                new Product { Id = 2, Name = "Fish2", Quantity = 1, BrandId = 1, TypeId = 1 } };
-            var entity = new Product { Id = 2, Name = "Fish2", Quantity = 1, BrandId = 1, TypeId = 1 };
+            var guid = new Guid("dc3f8b75-5414-4775-9f3b-dbeaef579df6");
+            var entities = new List<Product> { new Product { Id = DataHelper.ProductId, Name = "Fish", Quantity = 1, BrandId = DataHelper.BrandId, TypeId = DataHelper.ProductTypeId },
+                new Product { Id = guid, Name = "Fish2", Quantity = 1, BrandId = DataHelper.BrandId, TypeId = DataHelper.ProductTypeId } };
+            var entity = new Product { Id = guid, Name = "Fish2", Quantity = 1, BrandId = DataHelper.BrandId, TypeId = DataHelper.ProductTypeId };
 
             //Act
             _repository.Create(entity);
@@ -78,7 +80,7 @@ namespace DataAccessLayer.IntegrationTests.RepositoryTests
         public void Update_ValidCall_UpdateItemInDatabase()
         {
             //Arrange
-            var entity = new Product { Id = 1, Name = "Fish3", Quantity = 1, BrandId = 1, TypeId = 1 };
+            var entity = new Product { Id = DataHelper.ProductId, Name = "Fish3", Quantity = 1, BrandId = DataHelper.BrandId, TypeId = DataHelper.ProductTypeId };
             var entities = new List<Product> { entity };
 
             //Act
@@ -92,10 +94,10 @@ namespace DataAccessLayer.IntegrationTests.RepositoryTests
         public void Delete_ValidCall_UpdateItemInDatabase()
         {
             //Arrange
-            var entities = new List<Product> { new Product { Id = 1, Name = "Fish", Quantity = 1, BrandId = 1, TypeId = 1 } };
-            var entity = new Product { Id = 2, Name = "Fish2", Quantity = 1, BrandId = 1, TypeId = 1 };
+            var entities = new List<Product> { new Product { Id = DataHelper.ProductId, Name = "Fish", Quantity = 1, BrandId = DataHelper.BrandId, TypeId = DataHelper.ProductTypeId } };
+            var entity = new Product { Id = Guid.NewGuid(), Name = "Fish2", Quantity = 1, BrandId = DataHelper.BrandId, TypeId = DataHelper.ProductTypeId };
             _repository.Create(entity);
-            var id = 2;
+            var id = entity.Id;
 
             //Act
             _repository.Delete(id);

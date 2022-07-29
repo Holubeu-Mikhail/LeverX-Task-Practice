@@ -11,7 +11,7 @@
         public void GetAll_ValidCall_ReturnsList()
         {
             // Arrange
-            var entities = GetTestProductTypes();
+            var entities = GetTestProductTypes().AsQueryable();
 
             var mock = new Mock<IRepository<ProductType>>();
             mock.Setup(r => r.GetAll())
@@ -28,40 +28,38 @@
         }
 
         [Test]
-        [TestCase(1)]
-        public void Get_ValidCall_ReturnsEntity(int id)
+        public void Get_ValidCall_ReturnsEntity()
         {
             // Arrange
-            var expectedEntity = GetTestProductTypes()[id];
+            var expectedEntity = GetTestProductTypes()[0];
 
             var mock = new Mock<IRepository<ProductType>>();
-            mock.Setup(r => r.Get(It.IsAny<int>()))
+            mock.Setup(r => r.Get(It.IsAny<Guid>()))
                 .Returns(expectedEntity);
 
             var validator = new ProductTypeValidator(mock.Object);
             var service = new DataProvider<ProductType>(mock.Object, validator);
 
             // Act
-            var result = service.Get(id);
+            var result = service.Get(GetTestProductTypes()[0].Id);
 
             // Assert
             result.Should().NotBeNull().And.BeOfType(typeof(ProductType)).And.BeEquivalentTo(expectedEntity);
         }
 
         [Test]
-        [TestCase(-1)]
-        public void Get_InvalidCall_ReturnsNull(int id)
+        public void Get_InvalidCall_ReturnsNull()
         {
             // Arrange
             var mock = new Mock<IRepository<ProductType>>();
-            mock.Setup(r => r.Get(It.IsAny<int>()))
+            mock.Setup(r => r.Get(It.IsAny<Guid>()))
                 .Returns((ProductType)null);
 
             var validator = new ProductTypeValidator(mock.Object);
             var service = new DataProvider<ProductType>(mock.Object, validator);
 
             // Act
-            var result = service.Get(id);
+            var result = service.Get(Guid.NewGuid());
 
             // Assert
             result.Should().BeNull();
@@ -74,10 +72,9 @@
             var t = false;
             var entity = new ProductType
             {
-                Id = 4,
                 Name = "Automobile"
             };
-            var entities = GetTestProductTypes();
+            var entities = GetTestProductTypes().AsQueryable();
 
             var mock = new Mock<IRepository<ProductType>>();
             mock.Setup(r => r.GetAll())
@@ -102,10 +99,9 @@
             var t = false;
             var entity = new ProductType
             {
-                Id = 6,
                 Name = "Food"
             };
-            var entities = GetTestProductTypes();
+            var entities = GetTestProductTypes().AsQueryable();
 
             var mock = new Mock<IRepository<ProductType>>();
             mock.Setup(r => r.GetAll())
@@ -129,7 +125,6 @@
             // Arrange
             var entity = new ProductType
             {
-                Id = -1,
                 Name = null
             };
 
@@ -152,16 +147,16 @@
             var t = false;
             var entity = new ProductType
             {
-                Id = 1,
+                Id = GetTestProductTypes()[0].Id,
                 Name = "Automobile"
             };
-            var entities = GetTestProductTypes();
-            var expectedEntity = GetTestProductTypes()[entity.Id];
+            var entities = GetTestProductTypes().AsQueryable();
+            var expectedEntity = GetTestProductTypes()[0];
 
             var mock = new Mock<IRepository<ProductType>>();
             mock.Setup(r => r.GetAll())
                 .Returns(entities);
-            mock.Setup(r => r.Get(It.IsAny<int>()))
+            mock.Setup(r => r.Get(It.IsAny<Guid>()))
                 .Returns(expectedEntity);
             mock.Setup(r => r.Update(It.IsAny<ProductType>()))
                 .Callback(() => t = true);
@@ -183,16 +178,16 @@
             var t = false;
             var entity = new ProductType
             {
-                Id = 1,
+                Id = GetTestProductTypes()[0].Id,
                 Name = "Tech"
             };
-            var entities = GetTestProductTypes();
-            var expectedEntity = GetTestProductTypes()[entity.Id];
+            var entities = GetTestProductTypes().AsQueryable();
+            var expectedEntity = GetTestProductTypes()[0];
 
             var mock = new Mock<IRepository<ProductType>>();
             mock.Setup(r => r.GetAll())
                 .Returns(entities);
-            mock.Setup(r => r.Get(It.IsAny<int>()))
+            mock.Setup(r => r.Get(It.IsAny<Guid>()))
                 .Returns(expectedEntity);
             mock.Setup(r => r.Update(It.IsAny<ProductType>()))
                 .Callback(() => t = true);
@@ -213,7 +208,7 @@
             // Arrange
             var entity = new ProductType
             {
-                Id = -1,
+                Id = Guid.Empty,
                 Name = null
             };
 
@@ -230,24 +225,23 @@
         }
 
         [Test]
-        [TestCase(1)]
-        public void Delete_ValidCall_RepositoryMethodInvokes(int id)
+        public void Delete_ValidCall_RepositoryMethodInvokes()
         {
             // Arrange
             var t = false;
-            var entities = GetTestProductTypes();
+            var entities = GetTestProductTypes().AsQueryable();
 
             var mock = new Mock<IRepository<ProductType>>();
             mock.Setup(r => r.GetAll())
                 .Returns(entities);
-            mock.Setup(r => r.Delete(It.IsAny<int>()))
+            mock.Setup(r => r.Delete(It.IsAny<Guid>()))
                 .Callback(() => t = true);
 
             var validator = new ProductTypeValidator(mock.Object);
             var service = new DataProvider<ProductType>(mock.Object, validator);
 
             // Act
-            service.Delete(id);
+            service.Delete(GetTestProductTypes()[0].Id);
 
             // Assert
             t.Should().BeTrue();
@@ -260,17 +254,17 @@
             {
                 new ProductType
                 {
-                    Id = 1,
+                    Id = Guid.NewGuid(),
                     Name = "Food"
                 },
                 new ProductType
                 {
-                    Id = 2,
+                    Id = Guid.NewGuid(),
                     Name = "Drinks"
                 },
                 new ProductType
                 {
-                    Id = 3,
+                    Id = Guid.NewGuid(),
                     Name = "Tech"
                 }
             };
