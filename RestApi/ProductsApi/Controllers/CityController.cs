@@ -5,14 +5,14 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace ProductsApi.Controllers
 {
-    [Route("api/towns/")]
+    [Route("api/cities/")]
     [ApiController]
     [Authorize]
-    public class TownController : Controller
+    public class CityController : Controller
     {
-        private readonly IDataProvider<Town> _dataProvider;
+        private readonly IDataProvider<City> _dataProvider;
 
-        public TownController(IDataProvider<Town> dataProvider)
+        public CityController(IDataProvider<City> dataProvider)
         {
             _dataProvider = dataProvider;
         }
@@ -24,8 +24,8 @@ namespace ProductsApi.Controllers
             return Json(data);
         }
 
-        [HttpGet("{id:int}")]
-        public IActionResult Get(int id)
+        [HttpGet("{id}")]
+        public IActionResult Get(Guid id)
         {
             var data = _dataProvider.Get(id);
             return Json(data);
@@ -33,11 +33,11 @@ namespace ProductsApi.Controllers
 
         [HttpPost("")]
         [Authorize(Roles = "Admin")]
-        public IActionResult Create([FromBody] Town town)
+        public IActionResult Create([FromBody] City city)
         {
             try
             {
-                _dataProvider.Create(town);
+                _dataProvider.Create(city);
                 return Json(true);
             }
             catch (Exception)
@@ -48,11 +48,11 @@ namespace ProductsApi.Controllers
 
         [HttpPut("")]
         [Authorize(Roles = "Admin")]
-        public IActionResult Update(Town town)
+        public IActionResult Update(City city)
         {
             try
             {
-                _dataProvider.Update(town);
+                _dataProvider.Update(city);
                 return Json(true);
             }
             catch (Exception)
@@ -61,9 +61,9 @@ namespace ProductsApi.Controllers
             }
         }
 
-        [HttpDelete("{id:int}")]
+        [HttpDelete("{id}")]
         [Authorize(Roles = "Admin")]
-        public IActionResult Delete(int id)
+        public IActionResult Delete(Guid id)
         {
             try
             {

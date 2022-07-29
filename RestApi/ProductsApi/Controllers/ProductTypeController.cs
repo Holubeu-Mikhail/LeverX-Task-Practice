@@ -25,9 +25,9 @@ namespace ProductsApi.Controllers
             return Json(data);
         }
 
-        [HttpGet("{id:int}")]
+        [HttpGet("{id}")]
         [Authorize(Roles = "User")]
-        public IActionResult Get(int id)
+        public IActionResult Get(Guid id)
         {
             var data = _dataProvider.Get(id);
             return Json(data);
@@ -63,9 +63,9 @@ namespace ProductsApi.Controllers
             }
         }
 
-        [HttpDelete("{id:int}")]
+        [HttpDelete("{id}")]
         [Authorize(Roles = "Admin")]
-        public IActionResult Delete(int id)
+        public IActionResult Delete(Guid id)
         {
             try
             {

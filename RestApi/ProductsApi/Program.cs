@@ -6,31 +6,41 @@ using System.Text;
 using BusinessLogicLayer.Interfaces;
 using BusinessLogicLayer.Services;
 using BusinessLogicLayer.Validators;
-using DataAccessLayer;
 using DataAccessLayer.Interfaces;
 using DataAccessLayer.Models;
 using DataAccessLayer.Models.Authentication;
 using DataAccessLayer.Repositories;
 using FluentValidation;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using ConfigurationManager = Microsoft.Extensions.Configuration.ConfigurationManager;
 using Microsoft.OpenApi.Models;
-using IdentityDbContext = DataAccessLayer.IdentityDbContext;
+using ProductsApi.Utility;
+using IdentityDbContext = DataAccessLayer.DbContexts.IdentityDbContext;
+using DataAccessLayer.DbContexts;
 
 var builder = WebApplication.CreateBuilder(args);
-ConfigurationManager configuration = builder.Configuration;
+var configuration = builder.Configuration;
+var repo = configuration["SourceDb:Connection"];
 
-builder.Services.AddDbContext<AppDbContext>(options =>
+builder.Services.AddDbContext<EntityDbContext>(options =>
     options.UseSqlServer(configuration.GetConnectionString("EntityConnection")));
 builder.Services.AddHttpClient();
 
+if (repo == "Entity")
+{
+    builder.Services.AddTransient(typeof(IRepository<>), typeof(EntityRepository<>));
+}
+else if (repo == "Mongo")
+{
+    builder.Services.AddTransient(typeof(IRepository<>), typeof(MongoRepository<>));
+}
+
+
 builder.Services.AddTransient<IdentityDbContext<User>, IdentityDbContext>();
-builder.Services.AddTransient<DbContext, AppDbContext>();
+builder.Services.AddTransient<DbContext, EntityDbContext>();
 builder.Services.AddTransient<IValidator<Product>, ProductValidator>();
 builder.Services.AddTransient<IValidator<ProductType>, ProductTypeValidator>();
 builder.Services.AddTransient<IValidator<Brand>, BrandValidator>();
-builder.Services.AddTransient<IValidator<Town>, TownValidator>();
-builder.Services.AddTransient(typeof(IRepository<>), typeof(EntityRepository<>));
+builder.Services.AddTransient<IValidator<City>, CityValidator>();
 builder.Services.AddTransient(typeof(IDataProvider<>), typeof(DataProvider<>));
 
 builder.Services.AddDbContext<IdentityDbContext>(options => 
