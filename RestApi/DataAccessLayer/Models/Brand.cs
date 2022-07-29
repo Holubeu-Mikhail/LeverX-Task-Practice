@@ -1,4 +1,5 @@
-﻿using MongoDB.Bson.Serialization.Attributes;
+﻿using System;
+using MongoDB.Bson.Serialization.Attributes;
 
 namespace DataAccessLayer.Models
 {
@@ -7,7 +8,7 @@ namespace DataAccessLayer.Models
     {
         public string Name { get; set; }
 
-        public int TownId { get; set; }
+        public Guid CityId { get; set; }
 
         public string Description { get; set; }
     }

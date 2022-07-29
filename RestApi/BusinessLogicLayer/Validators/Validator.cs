@@ -1,4 +1,5 @@
-﻿using DataAccessLayer.Interfaces;
+﻿using System;
+using DataAccessLayer.Interfaces;
 using DataAccessLayer.Models;
 using FluentValidation;
 
@@ -19,6 +20,15 @@ namespace BusinessLogicLayer.Validators
             if (result == null)
                 return false;
             return true;
+        }
+
+        protected bool IsGuidNull(Guid id)
+        {
+            if (id == Guid.Empty)
+            {
+                return true;
+            }
+            return false;
         }
     }
 

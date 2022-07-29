@@ -5,13 +5,13 @@ using System.Linq;
 
 namespace BusinessLogicLayer.Validators
 {
-    internal class TownValidator : Validator<Town>
+    internal class CityValidator : Validator<City>
     {
-        public TownValidator(IRepository<Town> repository) : base(repository)
+        public CityValidator(IRepository<City> repository) : base(repository)
         {
             _repository = repository;
 
-            RuleFor(x => x.Code);
+            RuleFor(x => x.Code).GreaterThan(0);
             RuleFor(x => x.Name).NotNull().NotEmpty();
 
             RuleSet("BeforeCreating", () =>
@@ -25,9 +25,9 @@ namespace BusinessLogicLayer.Validators
                 RuleFor(x => x).Must(x => IsEntityExists(x));
             });
         }
-        private bool IsNameUnique(Town town)
+        private bool IsNameUnique(City city)
         {
-            var result = _repository.GetAll().All(x => x.Name != town.Name);
+            var result = _repository.GetAll().All(x => x.Name != city.Name);
             return result;
         }
     }

@@ -29,7 +29,7 @@ namespace BusinessLogicLayer.Services
             return entities.ToList();
         }
 
-        public T Get(int id)
+        public T Get(Guid id)
         {
             var entity = _repository.Get(id);
             return entity;
@@ -49,7 +49,7 @@ namespace BusinessLogicLayer.Services
                 _repository.Update(entity);
         }
 
-        public void Delete(int id)
+        public void Delete(Guid id)
         {
             _repository.Delete(id);
         }

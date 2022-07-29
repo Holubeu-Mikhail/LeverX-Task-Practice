@@ -1,11 +1,11 @@
 ﻿using DataAccessLayer.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace DataAccessLayer
+namespace DataAccessLayer.DbContexts
 {
-    internal class AppDbContext : DbContext
+    internal class EntityDbContext : DbContext
     {
-        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
+        public EntityDbContext(DbContextOptions<EntityDbContext> options) : base(options)
         {
         }
 
@@ -17,6 +17,6 @@ namespace DataAccessLayer
         public DbSet<Product> Products { get; set; }
         public DbSet<ProductType> ProductTypes { get; set; }
         public DbSet<Brand> Brands { get; set; }
-        public DbSet<Town> Towns { get; set; }
+        public DbSet<City> Towns { get; set; }
     }
 }

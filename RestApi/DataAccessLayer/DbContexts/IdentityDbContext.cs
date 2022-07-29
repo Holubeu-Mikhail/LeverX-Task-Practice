@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using DataAccessLayer.Models.Authentication;
 
-namespace DataAccessLayer
+namespace DataAccessLayer.DbContexts
 {
     internal class IdentityDbContext : IdentityDbContext<User>
     {

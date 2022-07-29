@@ -1,4 +1,5 @@
-﻿using MongoDB.Bson.Serialization.Attributes;
+﻿using System;
+using MongoDB.Bson.Serialization.Attributes;
 
 namespace DataAccessLayer.Models
 {
@@ -9,8 +10,8 @@ namespace DataAccessLayer.Models
 
         public int Quantity { get; set; }
 
-        public int TypeId { get; set; }
+        public Guid TypeId { get; set; }
 
-        public int BrandId { get; set; }
+        public Guid BrandId { get; set; }
     }
 }

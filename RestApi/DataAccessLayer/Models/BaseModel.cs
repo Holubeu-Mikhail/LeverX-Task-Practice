@@ -1,4 +1,5 @@
-﻿using MongoDB.Bson.Serialization.Attributes;
+﻿using System;
+using MongoDB.Bson.Serialization.Attributes;
 
 namespace DataAccessLayer.Models
 {
@@ -6,6 +7,6 @@ namespace DataAccessLayer.Models
     public class BaseModel
     {
         [BsonId]
-        public virtual int Id { get; set; }
+        public virtual Guid Id { get; set; }
     }
 }

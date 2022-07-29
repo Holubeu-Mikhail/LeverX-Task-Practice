@@ -1,9 +1,9 @@
-﻿using DataAccessLayer.Interfaces;
+﻿using System;
+using DataAccessLayer.Interfaces;
+using DataAccessLayer.Models;
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using DataAccessLayer.Models;
 
 [assembly: InternalsVisibleTo("DataAccessLayer.IntegrationTests")]
 [assembly: InternalsVisibleTo("ProductsApi")]
@@ -19,13 +19,13 @@ namespace DataAccessLayer.Repositories
             _context = context;
         }
 
-        public IEnumerable<T> GetAll()
+        public IQueryable<T> GetAll()
         {
-            var result = _context.Set<T>().ToList();
+            var result = _context.Set<T>().ToList().AsQueryable();
             return result;
         }
 
-        public T Get(int id)
+        public T Get(Guid id)
         {
             var result = _context.Set<T>().Find(id);
             return result;
@@ -43,7 +43,7 @@ namespace DataAccessLayer.Repositories
             _context.SaveChanges();
         }
 
-        public void Delete(int id)
+        public void Delete(Guid id)
         {
             var item = _context.Set<T>().Find(id);
             _context.Set<T>().Remove(item);

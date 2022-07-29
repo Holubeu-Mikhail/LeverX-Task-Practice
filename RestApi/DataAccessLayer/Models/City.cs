@@ -1,9 +1,11 @@
-﻿using MongoDB.Bson.Serialization.Attributes;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using MongoDB.Bson.Serialization.Attributes;
 
 namespace DataAccessLayer.Models
 {
     [BsonIgnoreExtraElements(true)]
-    public class Town : BaseModel
+    [Table("Cities")]
+    public class City : BaseModel
     {
         public string Name { get; set; }
 

@@ -12,8 +12,8 @@ namespace BusinessLogicLayer.Validators
             _repository = repository;
 
             RuleFor(x => x.Quantity).GreaterThanOrEqualTo(0);
-            RuleFor(x => x.TypeId).GreaterThanOrEqualTo(0);
-            RuleFor(x => x.BrandId).GreaterThanOrEqualTo(0);
+            RuleFor(x => x.TypeId).Must(x => !IsGuidNull(x));
+            RuleFor(x => x.BrandId).Must(x => !IsGuidNull(x));
             RuleFor(x => x.Name).NotNull().NotEmpty();
 
             RuleSet("BeforeCreating", () =>

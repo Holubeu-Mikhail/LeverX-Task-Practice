@@ -11,7 +11,7 @@ namespace BusinessLogicLayer.Validators
         {
             _repository = repository;
 
-            RuleFor(x => x.TownId).GreaterThanOrEqualTo(0);
+            RuleFor(x => x.CityId).Must(x => !IsGuidNull(x));
             RuleFor(x => x.Description).NotNull().NotEmpty();
             RuleFor(x => x.Name).NotNull().NotEmpty();
 
@@ -29,7 +29,7 @@ namespace BusinessLogicLayer.Validators
 
         private bool IsNameUnique(Brand brand)
         {
-            var result = _repository.GetAll().Where(x => x.TownId == brand.TownId).All(x => x.Name != brand.Name);
+            var result = _repository.GetAll().Where(x => x.CityId == brand.CityId).All(x => x.Name != brand.Name);
             return result;
         }
     }
