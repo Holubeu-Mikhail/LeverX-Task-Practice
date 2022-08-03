@@ -66,8 +66,8 @@ namespace DataAccessLayer.IntegrationTests.Helpers
 
             sqlExpression = $"DELETE FROM {tableName}";
 
-            var townCommand = new SqlCommand(sqlExpression, connection);
-            townCommand.ExecuteNonQuery();
+            var cityCommand = new SqlCommand(sqlExpression, connection);
+            cityCommand.ExecuteNonQuery();
 
             connection.Close();
         }

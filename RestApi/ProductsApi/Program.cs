@@ -13,7 +13,6 @@ using DataAccessLayer.Repositories;
 using FluentValidation;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
-using ProductsApi.Utility;
 using IdentityDbContext = DataAccessLayer.DbContexts.IdentityDbContext;
 using DataAccessLayer.DbContexts;
 
@@ -23,6 +22,7 @@ var repo = configuration["SourceDb:Connection"];
 
 builder.Services.AddDbContext<EntityDbContext>(options =>
     options.UseSqlServer(configuration.GetConnectionString("EntityConnection")));
+
 builder.Services.AddHttpClient();
 
 if (repo == "Entity")
@@ -34,9 +34,8 @@ else if (repo == "Mongo")
     builder.Services.AddTransient(typeof(IRepository<>), typeof(MongoRepository<>));
 }
 
-
-builder.Services.AddTransient<IdentityDbContext<User>, IdentityDbContext>();
 builder.Services.AddTransient<DbContext, EntityDbContext>();
+builder.Services.AddTransient<IdentityDbContext<User>, IdentityDbContext>();
 builder.Services.AddTransient<IValidator<Product>, ProductValidator>();
 builder.Services.AddTransient<IValidator<ProductType>, ProductTypeValidator>();
 builder.Services.AddTransient<IValidator<Brand>, BrandValidator>();
